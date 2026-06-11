@@ -1,0 +1,35 @@
+# build output
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# Hide Agent profiles and custom tools
+.agents/
+skills-lock.json
+
+# Hide manual backup text files
+antigravity_code_*.txt
+gemini-code-*.txt
+
+# Hide local editor workspaces
+.vscode/

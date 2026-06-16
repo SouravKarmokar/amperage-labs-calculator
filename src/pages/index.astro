@@ -3,7 +3,16 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Amperage Labs | Solar Battery & MPPT Sizing Calculator" description="Calculate required battery capacity (Ah/Wh) for off-grid solar energy systems. Interactive dashboard with real-time calculations, system recommendations, and custom Depth of Discharge overrides.">
-	<div class="relative min-h-screen flex flex-col overflow-x-hidden">
+	<!-- Inline script: apply saved theme before paint to avoid flash -->
+	<script is:inline>
+		(function() {
+			const saved = localStorage.getItem('al-theme');
+			if (saved === 'dark') {
+				document.documentElement.classList.add('dark');
+			}
+		})();
+	</script>
+	<div class="relative min-h-screen flex flex-col overflow-x-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
 		<!-- Mesh gradient backdrop - Vercel style atmospheric glow -->
 		<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none overflow-hidden z-0" aria-hidden="true">
 			<div class="absolute -top-[15%] -left-[10%] w-[55%] h-[65%] rounded-full bg-gradient-to-br from-[#007cf0] to-[#00dfd8] opacity-[0.06] blur-[90px]"></div>
@@ -12,23 +21,40 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 
 		<!-- Top Navigation Bar -->
-		<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#ebebeb] h-16 flex items-center justify-between px-6 md:px-8">
+		<header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#ebebeb] dark:border-[#222222] h-16 flex items-center justify-between px-6 md:px-8 transition-colors duration-300">
 			<div class="flex items-center gap-3">
 				<!-- Brand logo and Title -->
-				<div class="w-6 h-6 bg-[#171717] flex items-center justify-center rounded-sm" aria-hidden="true">
-					<span class="text-white font-mono text-xs font-bold">A</span>
+				<div class="w-6 h-6 bg-[#171717] dark:bg-white flex items-center justify-center rounded-sm" aria-hidden="true">
+					<span class="text-white dark:text-[#171717] font-mono text-xs font-bold">A</span>
 				</div>
-				<span class="font-sans font-semibold text-sm tracking-tight text-[#171717]">Amperage Labs.</span>
-				<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#f5f5f5] text-[#4d4d4d] border border-[#ebebeb]">v1.0.0</span>
+				<span class="font-sans font-semibold text-sm tracking-tight text-[#171717] dark:text-white">Amperage Labs.</span>
+				<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#f5f5f5] dark:bg-[#1a1a1a] text-[#4d4d4d] dark:text-[#888888] border border-[#ebebeb] dark:border-[#222222]">v1.0.0</span>
 			</div>
 			
 			<div class="flex items-center gap-4">
-				<a href="https://github.com" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-[#4d4d4d] hover:text-[#171717] transition-colors flex items-center gap-1.5" aria-label="GitHub Repository">
+				<a href="https://github.com" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-colors flex items-center gap-1.5" aria-label="GitHub Repository">
 					<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" />
 					</svg>
 					<span>src/docs</span>
 				</a>
+
+				<!-- Dark Mode Toggle -->
+				<button
+					type="button"
+					id="theme-toggle"
+					class="w-8 h-8 flex items-center justify-center rounded-sm border border-[#ebebeb] dark:border-[#222222] bg-[#f5f5f5] dark:bg-[#1a1a1a] text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white hover:bg-[#ebebeb] dark:hover:bg-[#222222] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white"
+					aria-label="Toggle dark mode"
+				>
+					<!-- Sun icon (shown in dark mode) -->
+					<svg id="icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+					</svg>
+					<!-- Moon icon (shown in light mode) -->
+					<svg id="icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+					</svg>
+				</button>
 			</div>
 		</header>
 
@@ -37,11 +63,11 @@ import Layout from '../layouts/Layout.astro';
 			
 			<!-- Page Header Title -->
 			<div class="flex flex-col gap-2 max-w-2xl">
-				<h1 class="font-sans text-3xl md:text-4xl font-semibold tracking-tight text-[#171717] leading-tight text-wrap-balance">
+				<h1 class="font-sans text-3xl md:text-4xl font-semibold tracking-tight text-[#171717] dark:text-white leading-tight text-wrap-balance">
 					Amperage Labs
 				</h1>
-				<p class="font-sans text-sm md:text-base text-[#4d4d4d] leading-relaxed">
-					Professional Off-Grid Solar, Battery, & MPPT Sizing Tool
+				<p class="font-sans text-sm md:text-base text-[#4d4d4d] dark:text-[#888888] leading-relaxed">
+					Off-Grid Solar, Battery, & MPPT Sizing Tool
 				</p>
 			</div>
 
@@ -50,9 +76,9 @@ import Layout from '../layouts/Layout.astro';
 				
 				<!-- LEFT COLUMN: Inputs (span 5) -->
 				<section class="lg:col-span-5 flex flex-col gap-6" aria-labelledby="controls-heading">
-					<div class="bg-white border border-[#ebebeb] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02),0px_4px_12px_rgba(0,0,0,0.02)]">
-						<h2 id="controls-heading" class="font-sans text-lg font-semibold tracking-tight text-[#171717] mb-6 flex items-center gap-2">
-							<span class="w-1.5 h-3 bg-[#171717] rounded-full inline-block"></span>
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02),0px_4px_12px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
+						<h2 id="controls-heading" class="font-sans text-lg font-semibold tracking-tight text-[#171717] dark:text-white mb-6 flex items-center gap-2">
+							<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
 							System parameters.
 						</h2>
 						
@@ -60,10 +86,10 @@ import Layout from '../layouts/Layout.astro';
 							<!-- Daily Load Input -->
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between items-baseline">
-									<label for="daily-load" class="font-sans text-xs font-semibold text-[#171717] tracking-tight">
+									<label for="daily-load" class="font-sans text-xs font-semibold text-[#171717] dark:text-white tracking-tight">
 										Daily Load
 									</label>
-									<span class="font-mono text-[11px] text-[#888888]" aria-hidden="true">Wh / day</span>
+									<span class="font-mono text-[11px] text-[#888888] dark:text-[#777777]" aria-hidden="true">Wh / day</span>
 								</div>
 								<div class="relative">
 									<input 
@@ -76,26 +102,26 @@ import Layout from '../layouts/Layout.astro';
 										step="10"
 										inputmode="numeric"
 										autocomplete="off"
-										class="w-full h-10 px-3 pr-10 bg-white border border-[#ebebeb] rounded-sm text-sm text-[#171717] placeholder-[#888888] focus:outline-none focus:ring-1 focus:ring-[#171717] focus:border-[#171717] transition-all font-mono"
+										class="w-full h-10 px-3 pr-10 bg-white dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-sm text-sm text-[#171717] dark:text-white placeholder-[#888888] dark:placeholder-[#555555] focus:outline-none focus:ring-1 focus:ring-[#171717] dark:focus:ring-white focus:border-[#171717] dark:focus:border-white transition-all font-mono"
 										placeholder="Enter daily load in Wh…"
 									/>
 									<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-										<span class="font-mono text-xs text-[#888888]">Wh</span>
+										<span class="font-mono text-xs text-[#888888] dark:text-[#777777]">Wh</span>
 									</div>
 								</div>
-								<p class="text-[11px] text-[#888888]/80 leading-tight">
+								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
 									Load: 24h consumption
 								</p>
 								
 								<!-- Presets Row -->
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Load Presets">
-									<button type="button" id="preset-low" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-low" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Low (Cabin: 500 Wh)
 									</button>
-									<button type="button" id="preset-med" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-med" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Med (RV: 1,500 Wh)
 									</button>
-									<button type="button" id="preset-high" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-high" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										High (Home: 5,000 Wh)
 									</button>
 								</div>
@@ -104,21 +130,21 @@ import Layout from '../layouts/Layout.astro';
 							<!-- System Voltage Segmented Control -->
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between items-baseline">
-									<span class="font-sans text-xs font-semibold text-[#171717] tracking-tight">System Voltage</span>
-									<span class="font-mono text-[11px] text-[#888888]">V (DC)</span>
+									<span class="font-sans text-xs font-semibold text-[#171717] dark:text-white tracking-tight">System Voltage</span>
+									<span class="font-mono text-[11px] text-[#888888] dark:text-[#777777]">V (DC)</span>
 								</div>
-								<div class="grid grid-cols-3 gap-1 bg-[#f5f5f5] border border-[#ebebeb] p-1 rounded-sm" role="radiogroup" aria-label="System Voltage Selection">
-									<button type="button" data-voltage="12" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] hover:text-[#171717] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="false">
+								<div class="grid grid-cols-3 gap-1 bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] p-1 rounded-sm" role="radiogroup" aria-label="System Voltage Selection">
+									<button type="button" data-voltage="12" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="false">
 										12 V
 									</button>
-									<button type="button" data-voltage="24" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#171717] bg-white shadow-xs border border-[#ebebeb] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="true">
+									<button type="button" data-voltage="24" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#171717] dark:text-white bg-white dark:bg-[#2a2a2a] shadow-xs border border-[#ebebeb] dark:border-[#444444] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="true">
 										24 V
 									</button>
-									<button type="button" data-voltage="48" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] hover:text-[#171717] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="false">
+									<button type="button" data-voltage="48" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="false">
 										48 V
 									</button>
 								</div>
-								<p class="text-[11px] text-[#888888]/80 leading-tight">
+								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
 									Voltage: 12V hobby vs 48V microgrid
 								</p>
 							</div>
@@ -126,18 +152,18 @@ import Layout from '../layouts/Layout.astro';
 							<!-- Battery Type Segmented Control -->
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between items-baseline">
-									<span class="font-sans text-xs font-semibold text-[#171717] tracking-tight">Battery Chemistry</span>
-									<span class="font-mono text-[11px] text-[#888888]">Chemistry</span>
+									<span class="font-sans text-xs font-semibold text-[#171717] dark:text-white tracking-tight">Battery Chemistry</span>
+									<span class="font-mono text-[11px] text-[#888888] dark:text-[#777777]">Chemistry</span>
 								</div>
-								<div class="grid grid-cols-2 gap-1 bg-[#f5f5f5] border border-[#ebebeb] p-1 rounded-sm" role="radiogroup" aria-label="Battery Type Selection">
-									<button type="button" data-battery="lithium" class="py-1.5 text-xs font-sans font-medium rounded-xs text-[#171717] bg-white shadow-xs border border-[#ebebeb] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="true">
+								<div class="grid grid-cols-2 gap-1 bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] p-1 rounded-sm" role="radiogroup" aria-label="Battery Type Selection">
+									<button type="button" data-battery="lithium" class="py-1.5 text-xs font-sans font-medium rounded-xs text-[#171717] dark:text-white bg-white dark:bg-[#2a2a2a] shadow-xs border border-[#ebebeb] dark:border-[#444444] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="true">
 										Lithium (LiFePO4)
 									</button>
-									<button type="button" data-battery="lead-acid" class="py-1.5 text-xs font-sans font-medium rounded-xs text-[#4d4d4d] hover:text-[#171717] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="false">
+									<button type="button" data-battery="lead-acid" class="py-1.5 text-xs font-sans font-medium rounded-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="false">
 										Lead-Acid (AGM/Gel)
 									</button>
 								</div>
-								<p class="text-[11px] text-[#888888]/80 leading-tight">
+								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
 									Chemistry: DoD battery wear limits
 								</p>
 							</div>
@@ -145,21 +171,21 @@ import Layout from '../layouts/Layout.astro';
 							<!-- Days of Autonomy Segmented Control -->
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between items-baseline">
-									<span class="font-sans text-xs font-semibold text-[#171717] tracking-tight">Days of Autonomy</span>
-									<span class="font-mono text-[11px] text-[#888888]">Days</span>
+									<span class="font-sans text-xs font-semibold text-[#171717] dark:text-white tracking-tight">Days of Autonomy</span>
+									<span class="font-mono text-[11px] text-[#888888] dark:text-[#777777]">Days</span>
 								</div>
-								<div class="grid grid-cols-3 gap-1 bg-[#f5f5f5] border border-[#ebebeb] p-1 rounded-sm" role="radiogroup" aria-label="Days of Autonomy Selection">
-									<button type="button" data-autonomy="1" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] hover:text-[#171717] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="false">
+								<div class="grid grid-cols-3 gap-1 bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] p-1 rounded-sm" role="radiogroup" aria-label="Days of Autonomy Selection">
+									<button type="button" data-autonomy="1" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="false">
 										1 Day
 									</button>
-									<button type="button" data-autonomy="2" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#171717] bg-white shadow-xs border border-[#ebebeb] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="true">
+									<button type="button" data-autonomy="2" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#171717] dark:text-white bg-white dark:bg-[#2a2a2a] shadow-xs border border-[#ebebeb] dark:border-[#444444] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="true">
 										2 Days
 									</button>
-									<button type="button" data-autonomy="3" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] hover:text-[#171717] transition-all focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none" role="radio" aria-checked="false">
+									<button type="button" data-autonomy="3" class="py-1.5 text-xs font-mono font-medium rounded-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-all focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none" role="radio" aria-checked="false">
 										3 Days
 									</button>
 								</div>
-								<p class="text-[11px] text-[#888888]/80 leading-tight">
+								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
 									Autonomy: stormy day safety buffer
 								</p>
 							</div>
@@ -167,10 +193,10 @@ import Layout from '../layouts/Layout.astro';
 							<!-- Peak Sun Hours (PSH) Input & presets -->
 							<div class="flex flex-col gap-2">
 								<div class="flex justify-between items-baseline">
-									<label for="psh-input" class="font-sans text-xs font-semibold text-[#171717] tracking-tight">
+									<label for="psh-input" class="font-sans text-xs font-semibold text-[#171717] dark:text-white tracking-tight">
 										Peak Sun Hours (PSH)
 									</label>
-									<span class="font-mono text-[11px] text-[#888888]" aria-hidden="true">Hours / day</span>
+									<span class="font-mono text-[11px] text-[#888888] dark:text-[#777777]" aria-hidden="true">Hours / day</span>
 								</div>
 								<div class="relative">
 									<input 
@@ -178,42 +204,42 @@ import Layout from '../layouts/Layout.astro';
 										id="psh-input" 
 										name="psh-input"
 										value="4.0" 
-										min="0.5" 
-										max="24" 
+										min="1.0" 
+										max="10.0" 
 										step="0.1"
 										inputmode="decimal"
 										autocomplete="off"
-										class="w-full h-10 px-3 pr-12 bg-white border border-[#ebebeb] rounded-sm text-sm text-[#171717] placeholder-[#888888] focus:outline-none focus:ring-1 focus:ring-[#171717] focus:border-[#171717] transition-all font-mono"
+										class="w-full h-10 px-3 pr-12 bg-white dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-sm text-sm text-[#171717] dark:text-white placeholder-[#888888] dark:placeholder-[#555555] focus:outline-none focus:ring-1 focus:ring-[#171717] dark:focus:ring-white focus:border-[#171717] dark:focus:border-white transition-all font-mono"
 										placeholder="Enter PSH…"
 									/>
 									<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-										<span class="font-mono text-xs text-[#888888]">hrs</span>
+										<span class="font-mono text-xs text-[#888888] dark:text-[#777777]">hrs</span>
 									</div>
 								</div>
-								<p class="text-[11px] text-[#888888]/80 leading-tight">
+								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
 									PSH: effective hours of maximum solar intensity
 								</p>
 								
 								<!-- Regional Presets Row -->
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Regional PSH Presets">
-									<button type="button" id="preset-bd" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-bd" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Bangladesh (4.5)
 									</button>
-									<button type="button" id="preset-eu" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-eu" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Europe (3.0)
 									</button>
-									<button type="button" id="preset-usa" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] border border-[#ebebeb] text-[#4d4d4d] hover:bg-[#ebebeb] hover:text-[#171717] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none">
+									<button type="button" id="preset-usa" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										USA (4.0)
 									</button>
 								</div>
 							</div>
 
 							<!-- Advanced Settings Collapsible Drawer (Details/Accordion pattern) -->
-							<div class="border-t border-[#ebebeb] pt-4 mt-2">
+							<div class="border-t border-[#ebebeb] dark:border-[#222222] pt-4 mt-2">
 								<button 
 									type="button" 
 									id="advanced-toggle"
-									class="flex items-center justify-between w-full text-left font-sans text-xs font-semibold text-[#4d4d4d] hover:text-[#171717] transition-colors focus:outline-none"
+									class="flex items-center justify-between w-full text-left font-sans text-xs font-semibold text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-colors focus:outline-none"
 									aria-expanded="false"
 									aria-controls="advanced-drawer"
 								>
@@ -233,11 +259,11 @@ import Layout from '../layouts/Layout.astro';
 									<div class="flex flex-col gap-4 pt-4 pb-2">
 										<div class="flex flex-col gap-2">
 											<div class="flex justify-between items-center">
-												<label for="dod-slider" class="font-sans text-xs font-semibold text-[#171717]">
+												<label for="dod-slider" class="font-sans text-xs font-semibold text-[#171717] dark:text-white">
 													Max Depth of Discharge (DoD)
 												</label>
 												<div class="flex items-center gap-1.5">
-													<span id="dod-value" class="font-mono text-xs font-bold text-[#171717] bg-[#f5f5f5] border border-[#ebebeb] px-1.5 py-0.5 rounded-sm">80%</span>
+													<span id="dod-value" class="font-mono text-xs font-bold text-[#171717] dark:text-white bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded-sm">80%</span>
 												</div>
 											</div>
 											<div class="flex items-center gap-4">
@@ -248,16 +274,16 @@ import Layout from '../layouts/Layout.astro';
 													max="100" 
 													value="80" 
 													step="5"
-													class="w-full h-1 bg-[#ebebeb] rounded-lg appearance-none cursor-pointer accent-[#171717] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717]"
+													class="w-full h-1 bg-[#ebebeb] dark:bg-[#333333] rounded-lg appearance-none cursor-pointer accent-[#171717] dark:accent-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white"
 												/>
 											</div>
 											<div class="flex justify-between items-center">
-												<span id="dod-status" class="font-mono text-[10px] text-[#888888] italic">Default for Lithium</span>
+												<span id="dod-status" class="font-mono text-[10px] text-[#888888] dark:text-[#777777] italic">Default for Lithium</span>
 												<button type="button" id="reset-dod" class="text-[10px] font-mono text-[#0070f3] hover:underline focus:outline-none hidden" aria-label="Reset DoD to chemistry default">
 													Reset to default
 												</button>
 											</div>
-											<p class="text-[11px] text-[#888888] leading-tight">
+											<p class="text-[11px] text-[#888888] dark:text-[#777777] leading-tight">
 												Sets how much battery capacity can be used safely. Lithium defaults to 80% (0.80); Lead-Acid defaults to 50% (0.50).
 											</p>
 										</div>
@@ -265,7 +291,7 @@ import Layout from '../layouts/Layout.astro';
 								</div>
 								
 								<!-- PSH Warning Banner -->
-								<div id="psh-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] border border-[#f5a623] text-xs text-[#ab570a] flex items-start gap-2 transition-all duration-300 mt-3">
+								<div id="psh-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-3">
 									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
 									</svg>
@@ -276,7 +302,7 @@ import Layout from '../layouts/Layout.astro';
 								</div>
 
 								<!-- Daily Load Warning Banner -->
-								<div id="load-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] border border-[#f5a623] text-xs text-[#ab570a] flex items-start gap-2 transition-all duration-300 mt-2">
+								<div id="load-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-2">
 									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
 									</svg>
@@ -294,78 +320,72 @@ import Layout from '../layouts/Layout.astro';
 				<!-- RIGHT COLUMN: Results & Display (span 7) -->
 				<section class="lg:col-span-7 flex flex-col gap-6" aria-labelledby="results-heading">
 					<!-- Main Calculation Card -->
-					<div class="bg-white border border-[#ebebeb] rounded-lg p-6 shadow-[0px_2px_2px_rgba(0,0,0,0.02),0px_8px_16px_-4px_rgba(0,0,0,0.02)]">
-						<h2 id="results-heading" class="font-sans text-lg font-semibold tracking-tight text-[#171717] mb-6 flex items-center gap-2">
-							<span class="w-1.5 h-3 bg-[#171717] rounded-full inline-block"></span>
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_2px_2px_rgba(0,0,0,0.02),0px_8px_16px_-4px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
+						<h2 id="results-heading" class="font-sans text-lg font-semibold tracking-tight text-[#171717] dark:text-white mb-6 flex items-center gap-2">
+							<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
 							Sizing analysis.
 						</h2>
 						
 						<!-- Big Numbers Display -->
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-[#ebebeb]">
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-[#ebebeb] dark:border-[#222222]">
 							<div class="flex flex-col gap-1">
-								<span class="font-sans text-xs font-semibold text-[#888888] uppercase tracking-wider">Required Battery Energy</span>
+								<span class="font-sans text-xs font-semibold text-[#888888] dark:text-[#777777] uppercase tracking-wider">Required Battery Energy</span>
 								<div class="flex items-baseline gap-1.5">
-									<span id="result-wh" class="font-mono text-3xl md:text-4xl font-bold tracking-tight text-[#171717] tabular-nums">1,500</span>
-									<span class="font-sans text-sm font-medium text-[#4d4d4d]">Wh</span>
+									<span id="result-wh" class="font-mono text-3xl md:text-4xl font-bold tracking-tight text-[#171717] dark:text-white tabular-nums">1,500</span>
+									<span class="font-sans text-sm font-medium text-[#4d4d4d] dark:text-[#888888]">Wh</span>
 								</div>
-								<div class="font-mono text-[9px] text-[#888888] tracking-tight mt-0.5 opacity-80" aria-hidden="true">
+								<div class="font-mono text-[9px] text-[#888888] dark:text-[#666666] tracking-tight mt-0.5 opacity-80" aria-hidden="true">
 									storageWh = (Load * Autonomy) / DoD
 								</div>
-								<p class="text-[11px] text-[#888888] leading-tight mt-1">
+								<p class="text-[11px] text-[#888888] dark:text-[#777777] leading-tight mt-1">
 									Total capacity required in watt-hours.
 								</p>
 							</div>
 							
 							<div class="flex flex-col gap-1">
-								<span class="font-sans text-xs font-semibold text-[#888888] uppercase tracking-wider">Required Battery Capacity</span>
+								<span class="font-sans text-xs font-semibold text-[#888888] dark:text-[#777777] uppercase tracking-wider">Required Battery Capacity</span>
 								<div class="flex items-baseline gap-1.5">
-									<span id="result-ah" class="font-mono text-3xl md:text-4xl font-bold tracking-tight text-[#171717] tabular-nums">62.5</span>
-									<span class="font-sans text-sm font-medium text-[#4d4d4d]">Ah</span>
+									<span id="result-ah" class="font-mono text-3xl md:text-4xl font-bold tracking-tight text-[#171717] dark:text-white tabular-nums">62.5</span>
+									<span class="font-sans text-sm font-medium text-[#4d4d4d] dark:text-[#888888]">Ah</span>
 								</div>
-								<div class="font-mono text-[9px] text-[#888888] tracking-tight mt-0.5 opacity-80" aria-hidden="true">
+								<div class="font-mono text-[9px] text-[#888888] dark:text-[#666666] tracking-tight mt-0.5 opacity-80" aria-hidden="true">
 									batteryAh = storageWh / Voltage
 								</div>
-								<p class="text-[11px] text-[#888888] leading-tight mt-1">
+								<p class="text-[11px] text-[#888888] dark:text-[#777777] leading-tight mt-1">
 									Battery rating at chosen system voltage.
 								</p>
 							</div>
 						</div>
 						
 						<!-- Battery Visualization Widget -->
-						<div class="py-6 border-b border-[#ebebeb]">
-							<span class="font-sans text-xs font-semibold text-[#888888] uppercase tracking-wider block mb-4">Battery Energy Allocation</span>
+						<div class="py-6 border-b border-[#ebebeb] dark:border-[#222222]">
+							<span class="font-sans text-xs font-semibold text-[#888888] dark:text-[#777777] uppercase tracking-wider block mb-4">Battery Energy Allocation</span>
 							
-							<div class="bg-[#fafafa] border border-[#ebebeb] rounded-md p-4 flex flex-col gap-4">
+							<div class="bg-[#fafafa] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-4">
 								<!-- Battery SVG Graphic -->
 								<div class="relative w-full h-16 flex items-center">
-									<!-- Battery Container Outline -->
 									<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 60" xmlns="http://www.w3.org/2000/svg">
-										<!-- Background shell -->
-										<rect x="0" y="5" width="488" height="50" rx="4" fill="#f5f5f5" stroke="#ebebeb" stroke-width="2" />
-										<!-- Battery Terminal Cap -->
-										<path d="M 488,18 H 494 V 42 H 488 Z" fill="#171717" rx="1" />
-										
-										<!-- Usable Fill (Active Energy) -->
-										<rect id="svg-usable-fill" x="3" y="8" width="388" height="44" rx="2" fill="#171717" class="transition-all duration-500 ease-out" />
-										<!-- Reserve Fill (Inactive DoD Buffer) -->
-										<rect id="svg-reserve-fill" x="391" y="8" width="94" height="44" rx="2" fill="#e5e7eb" class="transition-all duration-500 ease-out" />
+										<rect x="0" y="5" width="488" height="50" rx="4" fill="transparent" stroke="#333333" stroke-width="2" class="dark:stroke-[#333333] stroke-[#ebebeb]" />
+										<path d="M 488,18 H 494 V 42 H 488 Z" class="dark:fill-white fill-[#171717]" />
+										<rect id="svg-usable-fill" x="3" y="8" width="388" height="44" rx="2" class="dark:fill-white fill-[#171717] transition-all duration-500 ease-out" />
+										<rect id="svg-reserve-fill" x="391" y="8" width="94" height="44" rx="2" class="dark:fill-[#333333] fill-[#e5e7eb] transition-all duration-500 ease-out" />
 									</svg>
 								</div>
 								
 								<!-- Battery Metrics & Legend -->
 								<div class="grid grid-cols-2 gap-4 text-xs font-sans">
 									<div class="flex items-start gap-2">
-										<span class="w-3 h-3 bg-[#171717] rounded-xs mt-0.5" aria-hidden="true"></span>
+										<span class="w-3 h-3 bg-[#171717] dark:bg-white rounded-xs mt-0.5" aria-hidden="true"></span>
 										<div class="flex flex-col">
-											<span class="font-medium text-[#171717]">Usable Energy</span>
-											<span id="legend-usable" class="font-mono text-[11px] text-[#4d4d4d] tabular-nums">1,200 Wh (80%)</span>
+											<span class="font-medium text-[#171717] dark:text-white">Usable Energy</span>
+											<span id="legend-usable" class="font-mono text-[11px] text-[#4d4d4d] dark:text-[#888888] tabular-nums">1,200 Wh (80%)</span>
 										</div>
 									</div>
 									<div class="flex items-start gap-2">
-										<span class="w-3 h-3 bg-gray-300 rounded-xs mt-0.5" aria-hidden="true"></span>
+										<span class="w-3 h-3 bg-gray-300 dark:bg-[#333333] rounded-xs mt-0.5" aria-hidden="true"></span>
 										<div class="flex flex-col">
-											<span class="font-medium text-[#4d4d4d]">Reserve Capacity</span>
-											<span id="legend-reserve" class="font-mono text-[11px] text-[#888888] tabular-nums">300 Wh (20%)</span>
+											<span class="font-medium text-[#4d4d4d] dark:text-[#888888]">Reserve Capacity</span>
+											<span id="legend-reserve" class="font-mono text-[11px] text-[#888888] dark:text-[#777777] tabular-nums">300 Wh (20%)</span>
 										</div>
 									</div>
 								</div>
@@ -374,82 +394,113 @@ import Layout from '../layouts/Layout.astro';
 						
 						<!-- Recommended Hardware sizing -->
 						<div class="pt-6 flex flex-col gap-4">
-							<span class="font-sans text-xs font-semibold text-[#888888] uppercase tracking-wider block">Recommended System Hardware</span>
+							<span class="font-sans text-xs font-semibold text-[#888888] dark:text-[#777777] uppercase tracking-wider block">Recommended System Hardware</span>
 							
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 								<!-- Solar Array Recommendation Card -->
-								<div class="border border-[#ebebeb] bg-[#fafafa] rounded-md p-4 flex flex-col gap-2">
+								<div class="border border-[#ebebeb] dark:border-[#222222] bg-[#fafafa] dark:bg-[#1a1a1a] rounded-md p-4 flex flex-col gap-2">
 									<div class="flex justify-between items-center">
-										<span class="font-sans text-xs font-semibold text-[#4d4d4d]">Solar Array Rating</span>
-										<svg class="w-4 h-4 text-[#4d4d4d]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<span class="font-sans text-xs font-semibold text-[#4d4d4d] dark:text-[#888888]">Solar Array Rating</span>
+										<svg class="w-4 h-4 text-[#4d4d4d] dark:text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364-3.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
 										</svg>
 									</div>
 									<div class="flex items-baseline gap-1">
-										<span id="result-solar" class="font-mono text-2xl font-bold text-[#171717] tracking-tight tabular-nums">390</span>
-										<span class="font-sans text-xs text-[#4d4d4d]">W</span>
+										<span id="result-solar" class="font-mono text-2xl font-bold text-[#171717] dark:text-white tracking-tight tabular-nums">390</span>
+										<span class="font-sans text-xs text-[#4d4d4d] dark:text-[#888888]">W</span>
 									</div>
-									<div class="font-mono text-[9px] text-[#888888] tracking-tight opacity-80" aria-hidden="true">
+									<div class="font-mono text-[9px] text-[#888888] dark:text-[#666666] tracking-tight opacity-80" aria-hidden="true">
 										solarWatts = (Load * 1.3) / PSH
 									</div>
-									<p class="text-[10px] text-[#888888] leading-tight">
+									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Estimated solar array size assuming 30% system losses.
 									</p>
 								</div>
 								
 								<!-- Charge Controller Recommendation Card -->
-								<div class="border border-[#ebebeb] bg-[#fafafa] rounded-md p-4 flex flex-col gap-2">
+								<div class="border border-[#ebebeb] dark:border-[#222222] bg-[#fafafa] dark:bg-[#1a1a1a] rounded-md p-4 flex flex-col gap-2">
 									<div class="flex justify-between items-center">
-										<span class="font-sans text-xs font-semibold text-[#4d4d4d]">MPPT Controller Size</span>
-										<svg class="w-4 h-4 text-[#4d4d4d]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<span class="font-sans text-xs font-semibold text-[#4d4d4d] dark:text-[#888888]">MPPT Controller Size</span>
+										<svg class="w-4 h-4 text-[#4d4d4d] dark:text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
 										</svg>
 									</div>
 									<div class="flex items-baseline gap-1">
-										<span id="result-controller" class="font-mono text-2xl font-bold text-[#171717] tracking-tight tabular-nums">16.3</span>
-										<span class="font-sans text-xs text-[#4d4d4d]">A</span>
+										<span id="result-controller" class="font-mono text-2xl font-bold text-[#171717] dark:text-white tracking-tight tabular-nums">16.3</span>
+										<span class="font-sans text-xs text-[#4d4d4d] dark:text-[#888888]">A</span>
 									</div>
-									<div class="font-mono text-[9px] text-[#888888] tracking-tight opacity-80" aria-hidden="true">
+									<div class="font-mono text-[9px] text-[#888888] dark:text-[#666666] tracking-tight opacity-80" aria-hidden="true">
 										mpptAmps = solarWatts / Voltage
 									</div>
-									<p class="text-[10px] text-[#888888] leading-tight">
+									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Minimum charge controller size. We recommend rounding up to next standard rating.
 									</p>
+								</div>
+
+								<!-- Recharge Time Card -->
+								<div class="border border-[#ebebeb] dark:border-[#222222] bg-[#fafafa] dark:bg-[#1a1a1a] rounded-md p-4 flex flex-col gap-2">
+									<div class="flex justify-between items-center">
+										<span class="font-sans text-xs font-semibold text-[#4d4d4d] dark:text-[#888888]">Recharge Time</span>
+										<svg class="w-4 h-4 text-[#4d4d4d] dark:text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+										</svg>
+									</div>
+									<div class="flex items-baseline gap-1">
+										<span id="result-recharge" class="font-mono text-2xl font-bold text-[#171717] dark:text-white tracking-tight tabular-nums">6.7</span>
+										<span class="font-sans text-xs text-[#4d4d4d] dark:text-[#888888]">days</span>
+									</div>
+									<div class="font-mono text-[9px] text-[#888888] dark:text-[#666666] tracking-tight opacity-80" aria-hidden="true">
+										rechargeDays = Autonomy / 0.3
+									</div>
+									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
+										Estimated days to fully replenish the battery bank from a full autonomy drawdown, at the recommended array size and average sun, with the daily load still running.
+									</p>
+								</div>
+							</div>
+
+							<!-- Lead-Acid Recharge Advisory Banner -->
+							<div id="recharge-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300">
+								<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+								</svg>
+								<div class="flex flex-col gap-0.5">
+									<span class="font-semibold">Prolonged recharge window detected</span>
+									<span>For Lead-Acid chemistries, consider expanding the solar array or adding a generator backup to prevent permanent plate sulfation.</span>
 								</div>
 							</div>
 						</div>
 						
 						<!-- Action / Share row -->
 						<div class="mt-8 flex gap-3">
-							<button type="button" id="share-config" class="h-9 px-4 rounded-md text-xs font-medium text-white bg-[#171717] hover:bg-black transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none flex items-center justify-center gap-1.5 w-full md:w-auto">
+							<button type="button" id="share-config" class="h-9 px-4 rounded-md text-xs font-medium text-white bg-[#171717] dark:bg-white dark:text-[#171717] hover:bg-black dark:hover:bg-[#e5e5e5] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none flex items-center justify-center gap-1.5 w-full md:w-auto">
 								<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.636-2.65m0 7.816l-4.636-2.65m8.716-4.662a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0zM4 18.5a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0zm14-12a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0z"></path>
 								</svg>
 								Copy Configuration URL
 							</button>
-							<button type="button" id="reset-page" class="h-9 px-4 rounded-md text-xs font-medium text-[#4d4d4d] border border-[#ebebeb] bg-white hover:text-[#171717] hover:bg-[#fafafa] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] focus-visible:outline-none flex items-center justify-center gap-1.5 w-full md:w-auto">
+							<button type="button" id="reset-page" class="h-9 px-4 rounded-md text-xs font-medium text-[#4d4d4d] dark:text-[#888888] border border-[#ebebeb] dark:border-[#333333] bg-white dark:bg-[#1a1a1a] hover:text-[#171717] dark:hover:text-white hover:bg-[#fafafa] dark:hover:bg-[#222222] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none flex items-center justify-center gap-1.5 w-full md:w-auto">
 								Reset Dashboard
 							</button>
 						</div>
 					</div>
 					
 					<!-- Secondary Tips Card -->
-					<div class="bg-white border border-[#ebebeb] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02)]">
-						<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] mb-3">
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
+						<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] dark:text-white mb-3">
 							Off-grid battery sizing tips.
 						</h3>
-						<ul class="list-none flex flex-col gap-2.5 text-xs text-[#4d4d4d]">
+						<ul class="list-none flex flex-col gap-2.5 text-xs text-[#4d4d4d] dark:text-[#888888]">
 							<li class="flex gap-2">
-								<span class="font-mono text-[#888888] select-none" aria-hidden="true">01.</span>
-								<span><strong>Temperature Correction:</strong> Cold climates decrease available battery capacity. Add a margin of 10% to 20% in areas experiencing temperatures below 0°C.</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">01.</span>
+								<span><strong class="text-[#171717] dark:text-white">Temperature Correction:</strong> Cold climates decrease available battery capacity. Add a margin of 10% to 20% in areas experiencing temperatures below 0°C.</span>
 							</li>
 							<li class="flex gap-2">
-								<span class="font-mono text-[#888888] select-none" aria-hidden="true">02.</span>
-								<span><strong>Autonomy Days:</strong> Typical systems size for 2 to 3 days of autonomy (no sun). Multiply battery bank capacity accordingly to survive stormy seasons.</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">02.</span>
+								<span><strong class="text-[#171717] dark:text-white">Autonomy Days:</strong> Typical systems size for 2 to 3 days of autonomy (no sun). Multiply battery bank capacity accordingly to survive stormy seasons.</span>
 							</li>
 							<li class="flex gap-2">
-								<span class="font-mono text-[#888888] select-none" aria-hidden="true">03.</span>
-								<span><strong>Inverter Overhead:</strong> Standby inverter consumption contributes to daily load. Check specs (e.g. 10W to 20W constant draw) and include it in your daily Wh estimate.</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">03.</span>
+								<span><strong class="text-[#171717] dark:text-white">Inverter Overhead:</strong> Standby inverter consumption contributes to daily load. Check specs (e.g. 10W to 20W constant draw) and include it in your daily Wh estimate.</span>
 							</li>
 						</ul>
 					</div>
@@ -459,16 +510,16 @@ import Layout from '../layouts/Layout.astro';
 		</main>
 
 		<!-- Footer -->
-		<footer class="bg-white border-t border-[#ebebeb] py-8 px-6 md:px-8 mt-auto z-10 text-xs font-sans text-[#888888]">
+		<footer class="bg-white dark:bg-[#0a0a0a] border-t border-[#ebebeb] dark:border-[#222222] py-8 px-6 md:px-8 mt-auto z-10 text-xs font-sans text-[#888888] transition-colors duration-300">
 			<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
 				<div class="flex items-center gap-2">
-					<span class="font-semibold text-[#171717]">Amperage Labs.</span>
+					<span class="font-semibold text-[#171717] dark:text-white">Amperage Labs.</span>
 					<span>© 2026. All rights reserved.</span>
 				</div>
 				<div class="flex gap-4 font-mono text-[10px]">
 					<span>SYS-VOLT: SELECTABLE</span>
 					<span>CHEM: LITHIUM/LEAD-ACID</span>
-					<span id="footer-status" class="text-green-600 flex items-center gap-1">
+					<span id="footer-status" class="text-green-600 dark:text-green-500 flex items-center gap-1">
 						<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
 						CALCS: LIVE
 					</span>
@@ -500,6 +551,7 @@ import Layout from '../layouts/Layout.astro';
 		const resultAhText = document.getElementById('result-ah');
 		const resultSolarText = document.getElementById('result-solar');
 		const resultControllerText = document.getElementById('result-controller');
+		const resultRechargeText = document.getElementById('result-recharge');
 		
 		const svgUsableFill = document.getElementById('svg-usable-fill');
 		const svgReserveFill = document.getElementById('svg-reserve-fill');
@@ -531,6 +583,14 @@ import Layout from '../layouts/Layout.astro';
 			psh: 4.0,
 			dodLithium: 0.80,
 			dodLeadAcid: 0.50
+		};
+
+		// Validation bounds (kept consistent across HTML attrs, URL parsing, and calculate() clamps)
+		const BOUNDS = {
+			loadMin: 100,
+			loadMax: 100000,
+			pshMin: 1.0,
+			pshMax: 10.0
 		};
 
 		// State Variables
@@ -578,7 +638,7 @@ import Layout from '../layouts/Layout.astro';
 				
 				if (params.has('psh') && pshInput) {
 					const pshVal = parseFloat(params.get('psh') || '');
-					if (!isNaN(pshVal) && pshVal >= 0.5 && pshVal <= 24) {
+					if (!isNaN(pshVal) && pshVal >= BOUNDS.pshMin && pshVal <= BOUNDS.pshMax) {
 						pshInput.value = pshVal.toString();
 					}
 				}
@@ -642,8 +702,9 @@ import Layout from '../layouts/Layout.astro';
 		// 2. batteryAh = storageWh / Voltage
 		// 3. solarWatts = (Load * 1.3) / PSH
 		// 4. mpptAmps = solarWatts / Voltage
+		// 5. rechargeDays = Autonomy / 0.3
 		function calculate() {
-			if (!dailyLoadInput || !pshInput || !resultWhText || !resultAhText || !resultSolarText || !resultControllerText) return;
+			if (!dailyLoadInput || !pshInput || !resultWhText || !resultAhText || !resultSolarText || !resultControllerText || !resultRechargeText) return;
 			
 			// Parse inputs
 			let load = parseInt(dailyLoadInput.value, 10);
@@ -656,13 +717,27 @@ import Layout from '../layouts/Layout.astro';
 				psh = 4.0; // fallback
 			}
 			
-			// Guard rail: Daily Load
+			// Guard rail: Daily Load (symmetric clamp with banner for both low and high bounds)
 			const loadWarningBanner = document.getElementById('load-warning-banner');
 			const loadWarningText = document.getElementById('load-warning-message');
-			if (load > 100000) {
-				load = 100000;
+			let loadClamped = false;
+			let loadMsg = "";
+			
+			if (load > 0) {
+				if (load > BOUNDS.loadMax) {
+					load = BOUNDS.loadMax;
+					loadClamped = true;
+					loadMsg = `Safety bounds active: Daily Load clamped to ${BOUNDS.loadMax.toLocaleString()} Wh maximum.`;
+				} else if (load < BOUNDS.loadMin) {
+					load = BOUNDS.loadMin;
+					loadClamped = true;
+					loadMsg = `Safety bounds active: Daily Load clamped to ${BOUNDS.loadMin} Wh minimum.`;
+				}
+			}
+			
+			if (loadClamped) {
 				if (loadWarningText) {
-					loadWarningText.innerText = "Safety bounds active: Daily Load clamped to 100,000 Wh maximum.";
+					loadWarningText.innerText = loadMsg;
 				}
 				if (loadWarningBanner) {
 					loadWarningBanner.classList.remove('hidden');
@@ -680,14 +755,14 @@ import Layout from '../layouts/Layout.astro';
 			let pshMsg = "";
 			
 			if (pshInput.value !== "") {
-				if (psh < 1.0) {
-					psh = 1.0;
+				if (psh < BOUNDS.pshMin) {
+					psh = BOUNDS.pshMin;
 					pshClamped = true;
-					pshMsg = "Peak Sun Hours clamped to 1.0 hr minimum.";
-				} else if (psh > 10.0) {
-					psh = 10.0;
+					pshMsg = `Peak Sun Hours clamped to ${BOUNDS.pshMin.toFixed(1)} hr minimum.`;
+				} else if (psh > BOUNDS.pshMax) {
+					psh = BOUNDS.pshMax;
 					pshClamped = true;
-					pshMsg = "Peak Sun Hours clamped to 10.0 hrs maximum.";
+					pshMsg = `Peak Sun Hours clamped to ${BOUNDS.pshMax.toFixed(1)} hrs maximum.`;
 				}
 			}
 			
@@ -716,19 +791,38 @@ import Layout from '../layouts/Layout.astro';
 			// Formula 4: mpptAmps = solarWatts / Voltage
 			const mpptAmps = solarWatts / selectedVoltage;
 			
+			// Formula 5: rechargeDays = Autonomy / 0.3
+			// Derived from solarWatts already containing a 30% oversizing margin over Load,
+			// independent of PSH and Load (both cancel out algebraically).
+			const rechargeDays = selectedAutonomy / 0.3;
+			
 			// Render numerical text
 			resultWhText.innerText = load === 0 ? '0' : formatNumber(Math.round(storageWh));
 			resultAhText.innerText = load === 0 ? '0' : formatNumber(parseFloat(batteryAh.toFixed(1)));
 			resultSolarText.innerText = load === 0 ? '0' : formatNumber(Math.round(solarWatts));
 			resultControllerText.innerText = load === 0 ? '0' : formatNumber(parseFloat(mpptAmps.toFixed(1)));
+			resultRechargeText.innerText = load === 0 ? '0' : formatNumber(parseFloat(rechargeDays.toFixed(1)));
+			
+			// Lead-Acid Recharge Advisory: sulfation risk grows with longer autonomy
+			// (longer time spent at partial discharge between full recharges in real cloudy-weather conditions)
+			const rechargeWarningBanner = document.getElementById('recharge-warning-banner');
+			if (rechargeWarningBanner) {
+				if (load > 0 && selectedBattery === 'lead-acid' && selectedAutonomy >= 2) {
+					rechargeWarningBanner.classList.remove('hidden');
+				} else {
+					rechargeWarningBanner.classList.add('hidden');
+				}
+			}
 			
 			// Update Battery graphic dimensions & legends
 			updateBatteryGraphic(load, storageWh);
 		}
 		
-		// Helper: Format large numbers with commas
+		// Helper: Format numbers with comma thousands separators (decimal-safe)
 		function formatNumber(num: number): string {
-			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			const parts = num.toString().split('.');
+			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			return parts.join('.');
 		}
 		
 		// Update SVGs visually
@@ -925,13 +1019,15 @@ import Layout from '../layouts/Layout.astro';
 				calculate();
 			});
 			
-			// Clean negative values or letters on blur
+			// Clean negative values or letters on blur (kept in sync with BOUNDS used in calculate())
 			dailyLoadInput.addEventListener('blur', () => {
 				let val = parseInt(dailyLoadInput.value, 10);
 				if (isNaN(val) || val <= 0) {
-					dailyLoadInput.value = '100'; // fallback floor
-				} else if (val > 100000) {
-					dailyLoadInput.value = '100000'; // clamp visual input display on blur
+					dailyLoadInput.value = BOUNDS.loadMin.toString(); // fallback floor
+				} else if (val > BOUNDS.loadMax) {
+					dailyLoadInput.value = BOUNDS.loadMax.toString(); // clamp visual input display on blur
+				} else if (val < BOUNDS.loadMin) {
+					dailyLoadInput.value = BOUNDS.loadMin.toString(); // clamp visual input display on blur
 				}
 				calculate();
 			});
@@ -945,10 +1041,10 @@ import Layout from '../layouts/Layout.astro';
 			
 			pshInput.addEventListener('blur', () => {
 				let val = parseFloat(pshInput.value);
-				if (isNaN(val) || val < 1.0) {
-					pshInput.value = '1.0'; // clamp visual input on blur
-				} else if (val > 10.0) {
-					pshInput.value = '10.0'; // clamp visual input on blur
+				if (isNaN(val) || val < BOUNDS.pshMin) {
+					pshInput.value = BOUNDS.pshMin.toFixed(1); // clamp visual input on blur
+				} else if (val > BOUNDS.pshMax) {
+					pshInput.value = BOUNDS.pshMax.toFixed(1); // clamp visual input on blur
 				}
 				calculate();
 			});
@@ -1059,6 +1155,33 @@ import Layout from '../layouts/Layout.astro';
 			});
 		}
 		
+		// Dark Mode Toggle
+		const themeToggleBtn = document.getElementById('theme-toggle');
+		const iconSun = document.getElementById('icon-sun');
+		const iconMoon = document.getElementById('icon-moon');
+
+		function applyThemeIcons() {
+			const isDark = document.documentElement.classList.contains('dark');
+			if (iconSun && iconMoon) {
+				iconSun.classList.toggle('hidden', !isDark);
+				iconMoon.classList.toggle('hidden', isDark);
+			}
+			if (themeToggleBtn) {
+				themeToggleBtn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+			}
+		}
+
+		if (themeToggleBtn) {
+			themeToggleBtn.addEventListener('click', () => {
+				const isDark = document.documentElement.classList.toggle('dark');
+				localStorage.setItem('al-theme', isDark ? 'dark' : 'light');
+				applyThemeIcons();
+			});
+		}
+
+		// Set initial icon state
+		applyThemeIcons();
+
 		// Run initial procedures
 		loadParamsFromUrl();
 		calculate();

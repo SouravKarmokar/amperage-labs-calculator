@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Amperage Labs | Solar Battery & MPPT Sizing Calculator" description="Calculate required battery capacity (Ah/Wh) for off-grid solar energy systems. Interactive dashboard with real-time calculations, system recommendations, and custom Depth of Discharge overrides.">
+<Layout title="Off-Grid Solar Battery & MPPT Sizing Calculator | Amperage Labs" description="Size your off-grid solar battery bank and MPPT charge controller in seconds. Shows live maths, DoD chemistry defaults, recharge time, and regional PSH presets. Free, transparent, no sign-up.">
 	<!-- Inline script: apply saved theme before paint to avoid flash -->
 	<script is:inline>
 		(function() {
@@ -12,6 +12,29 @@ import Layout from '../layouts/Layout.astro';
 			}
 		})();
 	</script>
+
+	<!--
+	=====================================================================
+	FAVICON — add this to your Layout.astro <head>:
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+	Place a favicon.svg file in your /public folder.
+	Simplest version: an SVG with the letter "A" on a dark background.
+	=====================================================================
+
+	OG / SOCIAL META TAGS — add these to your Layout.astro <head>:
+	<meta property="og:title" content="Off-Grid Solar Battery & MPPT Sizing Calculator | Amperage Labs" />
+	<meta property="og:description" content="Size your off-grid solar battery bank and MPPT charge controller in seconds. Free, transparent, shows live maths." />
+	<meta property="og:url" content="https://yourdomain.com" />
+	<meta property="og:image" content="https://yourdomain.com/og-image.png" />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Off-Grid Solar Battery & MPPT Sizing Calculator | Amperage Labs" />
+	<meta name="twitter:description" content="Size your off-grid solar battery bank and MPPT charge controller in seconds. Free, transparent, shows live maths." />
+	<meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
+	Replace yourdomain.com with your actual paid domain once live.
+	og-image.png should be a 1200x630px screenshot of the dashboard.
+	=====================================================================
+	-->
 	<div class="relative min-h-screen flex flex-col overflow-x-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
 		<!-- Mesh gradient backdrop - Vercel style atmospheric glow -->
 		<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none overflow-hidden z-0" aria-hidden="true">
@@ -360,7 +383,7 @@ import Layout from '../layouts/Layout.astro';
 									<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 60" xmlns="http://www.w3.org/2000/svg">
 										<rect x="0" y="5" width="488" height="50" rx="4" fill="transparent" stroke="#333333" stroke-width="2" class="dark:stroke-[#333333] stroke-[#ebebeb]" />
 										<path d="M 488,18 H 494 V 42 H 488 Z" class="dark:fill-white fill-[#171717]" />
-										<rect id="svg-usable-fill" x="3" y="8" width="388" height="44" rx="2" class="dark:fill-white fill-[#171717] transition-all duration-500 ease-out" />
+										<rect id="svg-usable-fill" x="3" y="8" width="388" height="44" rx="2" class="dark:fill-[#0070f3] fill-[#171717] transition-all duration-500 ease-out" />
 										<rect id="svg-reserve-fill" x="391" y="8" width="94" height="44" rx="2" class="dark:fill-[#333333] fill-[#e5e7eb] transition-all duration-500 ease-out" />
 									</svg>
 								</div>
@@ -368,7 +391,7 @@ import Layout from '../layouts/Layout.astro';
 								<!-- Battery Metrics & Legend -->
 								<div class="grid grid-cols-2 gap-4 text-xs font-sans">
 									<div class="flex items-start gap-2">
-										<span class="w-3 h-3 bg-[#171717] dark:bg-white rounded-xs mt-0.5" aria-hidden="true"></span>
+										<span class="w-3 h-3 bg-[#171717] dark:bg-[#0070f3] rounded-xs mt-0.5" aria-hidden="true"></span>
 										<div class="flex flex-col">
 											<span class="font-medium text-[#171717] dark:text-white">Usable Energy</span>
 											<span id="legend-usable" class="font-mono text-[11px] text-[#4d4d4d] dark:text-[#888888] tabular-nums">1,200 Wh (80%)</span>
@@ -408,6 +431,16 @@ import Layout from '../layouts/Layout.astro';
 									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Estimated solar array size assuming 30% system losses.
 									</p>
+									<!-- AFFILIATE LINK: Replace YOUR_AMAZON_TAG with your Amazon Associates tag -->
+									<a
+										href="https://www.amazon.com/s?k=100w+monocrystalline+solar+panel&tag=YOUR_AMAZON_TAG"
+										target="_blank"
+										rel="noopener noreferrer sponsored"
+										class="mt-1 inline-flex items-center gap-1 text-[10px] font-mono text-[#0070f3] hover:underline focus:outline-none"
+										aria-label="Shop solar panels on Amazon (affiliate link)"
+									>
+										Shop solar panels →
+									</a>
 								</div>
 								
 								<!-- Charge Controller Recommendation Card -->
@@ -428,6 +461,16 @@ import Layout from '../layouts/Layout.astro';
 									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Minimum charge controller size. We recommend rounding up to next standard rating.
 									</p>
+									<!-- AFFILIATE LINK: Replace YOUR_AMAZON_TAG with your Amazon Associates tag -->
+									<a
+										href="https://www.amazon.com/s?k=mppt+solar+charge+controller&tag=YOUR_AMAZON_TAG"
+										target="_blank"
+										rel="noopener noreferrer sponsored"
+										class="mt-1 inline-flex items-center gap-1 text-[10px] font-mono text-[#0070f3] hover:underline focus:outline-none"
+										aria-label="Shop MPPT charge controllers on Amazon (affiliate link)"
+									>
+										Shop MPPT controllers →
+									</a>
 								</div>
 
 								<!-- Recharge Time Card -->
@@ -446,7 +489,7 @@ import Layout from '../layouts/Layout.astro';
 										rechargeDays = Autonomy / 0.3
 									</div>
 									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
-										The number of sunny days needed to fully charge the battery bank after a blackout, assuming normal daytime household energy use continues.
+										Estimated sunny days to fully replenish the battery bank after a complete autonomy-period discharge, assuming the recommended array size and daily load still running.
 									</p>
 								</div>
 							</div>
@@ -485,17 +528,102 @@ import Layout from '../layouts/Layout.astro';
 						<ul class="list-none flex flex-col gap-2.5 text-xs text-[#4d4d4d] dark:text-[#888888]">
 							<li class="flex gap-2">
 								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">01.</span>
-								<span><strong class="text-[#171717] dark:text-white">Temperature Correction:</strong> Cold climates decrease available battery capacity. Add a margin of 10% to 20% in areas experiencing temperatures below 0°C.</span>
+								<span><strong class="text-[#171717] dark:text-white">Tropical &amp; Dusty Climates:</strong> In Bangladesh and similar climates, temperature derating is minimal — but dust and haze can reduce panel output by 10–15%. Use a slightly conservative PSH (try 4.0 instead of 4.5) or plan to clean panels monthly.</span>
 							</li>
 							<li class="flex gap-2">
 								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">02.</span>
-								<span><strong class="text-[#171717] dark:text-white">Autonomy Days:</strong> Typical systems size for 2 to 3 days of autonomy (no sun). Multiply battery bank capacity accordingly to survive stormy seasons.</span>
+								<span><strong class="text-[#171717] dark:text-white">Autonomy Days:</strong> For load-shedding backup where grid returns within 12–24 hrs, 1 day of autonomy is usually sufficient. For fully off-grid rural systems, size for 2–3 days to survive consecutive overcast days.</span>
 							</li>
 							<li class="flex gap-2">
 								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">03.</span>
-								<span><strong class="text-[#171717] dark:text-white">Inverter Overhead:</strong> Standby inverter consumption contributes to daily load. Check specs (e.g. 10W to 20W constant draw) and include it in your daily Wh estimate.</span>
+								<span><strong class="text-[#171717] dark:text-white">Inverter Overhead:</strong> A typical 1000W pure-sine inverter draws 10–20W at idle even with no load. For a 24h system, that adds 240–480 Wh/day — include this in your Daily Load input before sizing.</span>
+							</li>
+							<li class="flex gap-2">
+								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">04.</span>
+								<span><strong class="text-[#171717] dark:text-white">Battery Chemistry:</strong> LiFePO4 lasts 2,000–5,000 cycles vs 300–500 for Lead-Acid, making it cheaper long-term despite the higher upfront cost. <!-- AFFILIATE: Replace YOUR_AMAZON_TAG --><a href="https://www.amazon.com/s?k=lifepo4+battery+12v&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener noreferrer sponsored" class="text-[#0070f3] hover:underline">Browse LiFePO4 batteries →</a></span>
 							</li>
 						</ul>
+					</div>
+
+					<!-- Methodology & Assumptions Collapsible Card -->
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg shadow-[0px_1px_2px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
+						<button
+							type="button"
+							id="methodology-toggle"
+							class="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+							aria-expanded="false"
+							aria-controls="methodology-drawer"
+						>
+							<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] dark:text-white">
+								Methodology &amp; assumptions.
+							</h3>
+							<svg id="methodology-chevron" class="w-4 h-4 text-[#888888] dark:text-[#555555] transform transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+							</svg>
+						</button>
+
+						<div
+							id="methodology-drawer"
+							class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out"
+							style="transition-property: max-height;"
+						>
+							<div class="px-6 pb-6 flex flex-col gap-5 text-xs text-[#4d4d4d] dark:text-[#888888]">
+								<div class="border-t border-[#ebebeb] dark:border-[#222222] pt-5 flex flex-col gap-4">
+
+									<!-- Formula 1 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Battery Bank Energy (storageWh)</span>
+										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">storageWh = (Daily Load × Autonomy Days) / DoD</code>
+										<p class="leading-relaxed">Your load multiplied by how many days the battery must sustain it, then divided by DoD to account for the unusable reserved portion. A Lithium battery at 80% DoD means only 80% of rated capacity is available — the remaining 20% is reserved to protect cycle life.</p>
+									</div>
+
+									<!-- Formula 2 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Battery Capacity (batteryAh)</span>
+										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">batteryAh = storageWh / System Voltage</code>
+										<p class="leading-relaxed">Watt-hours divided by system voltage (Wh = Ah × V). This gives the minimum Ah rating when purchasing batteries. At 24V, the same Wh requirement needs half the Ah of a 12V system — higher voltage systems use thinner wiring and lose less energy to heat.</p>
+									</div>
+
+									<!-- Formula 3 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Solar Array Size (solarWatts)</span>
+										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">solarWatts = (Daily Load × 1.3) / PSH</code>
+										<p class="leading-relaxed">The 1.3× multiplier accounts for ~30% real-world losses: wiring resistance, MPPT conversion, temperature derating, panel soiling, and inverter inefficiency. Peak Sun Hours (PSH) converts watt-hour demand into a panel wattage rating. The array is sized to replenish one day's load; the battery handles multi-day autonomy separately.</p>
+									</div>
+
+									<!-- Formula 4 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">MPPT Controller Size (mpptAmps)</span>
+										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">mpptAmps = solarWatts / System Voltage</code>
+										<p class="leading-relaxed">This is the output-side (battery-side) current rating — the current flowing from controller into the battery bank. Always round up to the next standard rating (20A, 30A, 40A). MPPT controllers step down from a higher panel voltage, so panel-side input current will be lower than this figure.</p>
+									</div>
+
+									<!-- Formula 5 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Recharge Time (rechargeDays)</span>
+										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">rechargeDays = Autonomy Days / 0.3</code>
+										<p class="leading-relaxed">Because the recommended array is sized at 1.3× daily load, it generates 30% more energy than it consumes each day. Dividing autonomy days by 0.3 gives the days of average sun needed to fully recover from a complete autonomy drawdown, while still running the daily load throughout.</p>
+									</div>
+
+									<!-- Limitations -->
+									<div class="flex flex-col gap-1.5 border-t border-[#ebebeb] dark:border-[#222222] pt-4">
+										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">What this tool does not account for</span>
+										<ul class="flex flex-col gap-1 leading-relaxed list-none">
+											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Panel string configuration, Voc, or temperature voltage rise (use <a href="https://mppt.victronenergy.com/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Victron's MPPT calculator</a> for string-level sizing)</span></li>
+											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Shading losses or panel tilt and orientation correction</span></li>
+											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Inverter sizing (VA rating vs load power factor)</span></li>
+											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Grid-tied or hybrid systems with net metering</span></li>
+											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Battery series/parallel wiring configuration to achieve system voltage</span></li>
+										</ul>
+									</div>
+
+									<!-- PSH source links -->
+									<p class="leading-relaxed text-[#888888] dark:text-[#777777]">
+										To find accurate PSH for your location, use the free <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">EU JRC PVGIS tool</a> or <a href="https://globalsolaratlas.info/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Global Solar Atlas</a>.
+									</p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</section>
 				
@@ -1148,6 +1276,25 @@ import Layout from '../layouts/Layout.astro';
 			});
 		}
 		
+		// Methodology Drawer Toggle
+		const methodologyToggleBtn = document.getElementById('methodology-toggle');
+		const methodologyDrawer = document.getElementById('methodology-drawer');
+		const methodologyChevron = document.getElementById('methodology-chevron');
+
+		if (methodologyToggleBtn && methodologyDrawer && methodologyChevron) {
+			methodologyToggleBtn.addEventListener('click', () => {
+				const isExpanded = methodologyToggleBtn.getAttribute('aria-expanded') === 'true';
+				methodologyToggleBtn.setAttribute('aria-expanded', (!isExpanded).toString());
+				if (!isExpanded) {
+					methodologyDrawer.style.maxHeight = methodologyDrawer.scrollHeight + 'px';
+					methodologyChevron.classList.add('rotate-180');
+				} else {
+					methodologyDrawer.style.maxHeight = '0px';
+					methodologyChevron.classList.remove('rotate-180');
+				}
+			});
+		}
+
 		// Dark Mode Toggle
 		const themeToggleBtn = document.getElementById('theme-toggle');
 		const iconSun = document.getElementById('icon-sun');

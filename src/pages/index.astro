@@ -87,10 +87,10 @@ import Layout from '../layouts/Layout.astro';
 			</div>
 
 			<!-- Dashboard Two-Column Grid -->
-			<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
 				
 				<!-- LEFT COLUMN: Inputs (span 5) -->
-				<section class="lg:col-span-5 flex flex-col gap-6" aria-labelledby="controls-heading">
+				<section class="lg:col-span-5 flex flex-col gap-6 h-full" aria-labelledby="controls-heading">
 					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02),0px_4px_12px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
 						<h2 id="controls-heading" class="font-sans text-lg font-semibold tracking-tight text-[#171717] dark:text-white mb-6 flex items-center gap-2">
 							<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
@@ -329,6 +329,76 @@ import Layout from '../layouts/Layout.astro';
 							</div>
 							
 						</div>
+					</div>
+					<!-- PSH Regional Reference Card -->
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300 flex-grow">
+						<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] dark:text-white mb-1 flex items-center gap-2">
+							<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
+							Peak Sun Hours reference.
+						</h3>
+						<p class="text-[11px] text-[#888888] dark:text-[#777777] mb-4 leading-relaxed">
+							PSH varies by location, season, and panel tilt. These are annual daily averages for a south-facing panel at optimal tilt. Use the regional presets in the calculator above, or enter a custom value for your location.
+						</p>
+						<div class="flex flex-col gap-0 border border-[#ebebeb] dark:border-[#222222] rounded-md overflow-hidden text-xs">
+							<div class="grid grid-cols-3 bg-[#f5f5f5] dark:bg-[#1a1a1a] px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222]">
+								<span class="font-mono font-semibold text-[10px] text-[#4d4d4d] dark:text-[#888888] uppercase tracking-wider">Region</span>
+								<span class="font-mono font-semibold text-[10px] text-[#4d4d4d] dark:text-[#888888] uppercase tracking-wider text-center">PSH (avg)</span>
+								<span class="font-mono font-semibold text-[10px] text-[#4d4d4d] dark:text-[#888888] uppercase tracking-wider text-right">Range</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Bangladesh</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">4.5</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">4.0 – 5.5</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">India (South)</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">5.0</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">4.5 – 6.0</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Sub-Saharan Africa</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">5.5</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">5.0 – 7.0</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Middle East</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">6.0</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">5.5 – 7.5</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">USA (Southwest)</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">5.5</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">5.0 – 7.0</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">USA (Average)</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">4.0</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">3.0 – 5.5</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Southern Europe</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">4.5</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">4.0 – 5.5</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Central Europe</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">3.0</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">2.5 – 4.0</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 border-b border-[#ebebeb] dark:border-[#222222] hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">UK &amp; Ireland</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">2.5</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">2.0 – 3.5</span>
+							</div>
+							<div class="grid grid-cols-3 px-3 py-2 hover:bg-[#fafafa] dark:hover:bg-[#1a1a1a] transition-colors">
+								<span class="font-sans text-[#171717] dark:text-white">Australia</span>
+								<span class="font-mono text-[#171717] dark:text-white text-center font-semibold">5.0</span>
+								<span class="font-mono text-[#888888] dark:text-[#777777] text-right">4.0 – 6.5</span>
+							</div>
+						</div>
+						<p class="text-[10px] text-[#888888] dark:text-[#777777] mt-3 leading-relaxed">
+							For precise values at your exact coordinates and panel orientation, use <a href="https://globalsolaratlas.info/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Global Solar Atlas</a> or <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">EU JRC PVGIS</a>.
+						</p>
 					</div>
 				</section>
 				

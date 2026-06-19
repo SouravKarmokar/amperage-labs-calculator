@@ -1,0 +1,337 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Calculation Methodology | Amperage Labs" description="How Amperage Labs calculates off-grid solar battery bank size, MPPT charge controller rating, solar array wattage, and recharge time — with full formula derivations and assumptions.">
+	<!-- Inline script: apply saved theme before paint to avoid flash -->
+	<script is:inline>
+		(function() {
+			const saved = localStorage.getItem('al-theme');
+			if (saved === 'dark') {
+				document.documentElement.classList.add('dark');
+			}
+		})();
+	</script>
+
+	<div class="relative min-h-screen flex flex-col overflow-x-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
+
+		<!-- Top Navigation Bar -->
+		<header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#ebebeb] dark:border-[#222222] h-16 flex items-center justify-between px-6 md:px-8 transition-colors duration-300">
+			<div class="flex items-center gap-3">
+				<a href="/" class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white rounded-sm">
+					<div class="w-6 h-6 bg-[#171717] dark:bg-white flex items-center justify-center rounded-sm" aria-hidden="true">
+						<span class="text-white dark:text-[#171717] font-mono text-xs font-bold">A</span>
+					</div>
+					<span class="font-sans font-semibold text-sm tracking-tight text-[#171717] dark:text-white">Amperage Labs.</span>
+				</a>
+			</div>
+
+			<div class="flex items-center gap-4">
+				<a href="/" class="font-mono text-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-colors flex items-center gap-1.5">
+					← Back to Calculator
+				</a>
+
+				<!-- Dark Mode Toggle -->
+				<button
+					type="button"
+					id="theme-toggle"
+					class="w-8 h-8 flex items-center justify-center rounded-sm border border-[#ebebeb] dark:border-[#222222] bg-[#f5f5f5] dark:bg-[#1a1a1a] text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white hover:bg-[#ebebeb] dark:hover:bg-[#222222] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white"
+					aria-label="Toggle dark mode"
+				>
+					<svg id="icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+					</svg>
+					<svg id="icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+					</svg>
+				</button>
+			</div>
+		</header>
+
+		<!-- Page Content -->
+		<main class="flex-grow w-full max-w-3xl mx-auto px-6 py-10 md:py-16 z-10 flex flex-col gap-10">
+
+			<!-- Page Header -->
+			<div class="flex flex-col gap-3">
+				<div class="flex items-center gap-2">
+					<a href="/" class="font-mono text-[11px] text-[#888888] dark:text-[#555555] hover:text-[#171717] dark:hover:text-white transition-colors">Amperage Labs</a>
+					<span class="text-[#ebebeb] dark:text-[#333333]">/</span>
+					<span class="font-mono text-[11px] text-[#4d4d4d] dark:text-[#777777]">Methodology</span>
+				</div>
+				<h1 class="font-sans text-3xl md:text-4xl font-semibold tracking-tight text-[#171717] dark:text-white leading-tight">
+					Calculation methodology.
+				</h1>
+				<p class="font-sans text-sm md:text-base text-[#4d4d4d] dark:text-[#888888] leading-relaxed max-w-xl">
+					Every number the calculator produces comes from a named formula. This page documents each one — the derivation, the assumptions behind it, and where those assumptions break down.
+				</p>
+			</div>
+
+			<!-- Design Philosophy -->
+			<section class="flex flex-col gap-4">
+				<div class="flex flex-col gap-1">
+					<h2 class="font-sans text-base font-semibold tracking-tight text-[#171717] dark:text-white flex items-center gap-2">
+						<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
+						Design philosophy
+					</h2>
+				</div>
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+					<p>
+						Most off-grid sizing tools give you a number without showing the reasoning. Amperage Labs takes the opposite approach — every output is traceable to a formula, every formula is visible on screen, and every assumption is documented here.
+					</p>
+					<p>
+						The calculator uses the <strong class="text-[#171717] dark:text-white">standard off-grid sizing methodology</strong> taught in power electronics and renewable energy engineering: size the battery bank for autonomy and depth-of-discharge, size the solar array for daily energy replenishment with a system-loss margin, and derive the charge controller rating from the resulting array output current. This approach is conservative by design — it produces systems that perform reliably in real conditions, not just on paper.
+					</p>
+				</div>
+			</section>
+
+			<!-- Formulas Section -->
+			<section class="flex flex-col gap-6">
+				<h2 class="font-sans text-base font-semibold tracking-tight text-[#171717] dark:text-white flex items-center gap-2">
+					<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
+					Formulas &amp; derivations
+				</h2>
+
+				<!-- Formula 1 -->
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4">
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded">01</span>
+							<h3 class="font-sans text-sm font-semibold text-[#171717] dark:text-white">Battery Bank Energy</h3>
+						</div>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block mt-2">
+							storageWh = (Daily Load × Autonomy Days) / DoD
+						</code>
+					</div>
+					<div class="text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+						<p>
+							The battery bank must store enough energy to power your load for the chosen number of autonomy days — the consecutive days of little or no solar generation your system can survive without running flat.
+						</p>
+						<p>
+							Dividing by Depth of Discharge (DoD) accounts for the fact that not all of a battery's rated capacity is safely usable. A 100 Ah LiFePO4 battery at 80% DoD delivers 80 Ah of usable energy; the remaining 20 Ah is held in reserve to protect the cells from over-discharge and extend cycle life. Without this correction, you would be sizing for the usable portion only and inadvertently over-stressing the battery on every cycle.
+						</p>
+						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
+							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">1,200 Wh/day × 2 days = 2,400 Wh needed. At 80% DoD: 2,400 / 0.80 = <strong class="text-[#171717] dark:text-white">3,000 Wh</strong> total bank size required.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Formula 2 -->
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4">
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded">02</span>
+							<h3 class="font-sans text-sm font-semibold text-[#171717] dark:text-white">Battery Capacity in Amp-Hours</h3>
+						</div>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block mt-2">
+							batteryAh = storageWh / System Voltage
+						</code>
+					</div>
+					<div class="text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+						<p>
+							Battery datasheets specify capacity in amp-hours (Ah) at a given voltage. This formula converts the watt-hour requirement from Formula 1 into the Ah figure you need when specifying or purchasing batteries, using the fundamental electrical relationship Wh = Ah × V.
+						</p>
+						<p>
+							System voltage has a practical engineering implication beyond the maths: a 24V system stores the same energy as a 12V system using half the current. Lower current means thinner, cheaper wiring, reduced resistive losses, and smaller fuse ratings. For systems above roughly 500W, 24V or 48V is the standard choice.
+						</p>
+						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
+							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">3,000 Wh at 24V: 3,000 / 24 = <strong class="text-[#171717] dark:text-white">125 Ah</strong>. The same energy at 12V would require 250 Ah.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Formula 3 -->
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4">
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded">03</span>
+							<h3 class="font-sans text-sm font-semibold text-[#171717] dark:text-white">Solar Array Rating</h3>
+						</div>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block mt-2">
+							solarWatts = (Daily Load × 1.3) / Peak Sun Hours
+						</code>
+					</div>
+					<div class="text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+						<p>
+							<strong class="text-[#171717] dark:text-white">Peak Sun Hours (PSH)</strong> is the key input here. It is not the number of daylight hours — it is the equivalent number of hours per day during which solar irradiance averages 1,000 W/m², which is the standard test condition for panel wattage ratings. A 390W panel in a 4.5 PSH location produces approximately 390 × 4.5 = 1,755 Wh on a clear day before losses.
+						</p>
+						<p>
+							The <strong class="text-[#171717] dark:text-white">1.3× multiplier</strong> represents a 30% gross margin for real-world system losses that are unavoidable in practice:
+						</p>
+						<ul class="flex flex-col gap-1.5 list-none text-xs">
+							<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none shrink-0">—</span><span><strong class="text-[#171717] dark:text-white">Wiring resistance losses</strong> — current travelling through cables generates heat proportional to resistance, reducing useful power.</span></li>
+							<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none shrink-0">—</span><span><strong class="text-[#171717] dark:text-white">MPPT conversion efficiency</strong> — charge controllers operate at roughly 93–97% efficiency; some energy is lost in the conversion process.</span></li>
+							<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none shrink-0">—</span><span><strong class="text-[#171717] dark:text-white">Temperature derating</strong> — crystalline silicon panels lose approximately 0.4% of output per °C above 25°C. In warm climates, panels routinely operate at 50–65°C, reducing output by 10–16%.</span></li>
+							<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none shrink-0">—</span><span><strong class="text-[#171717] dark:text-white">Soiling and shading</strong> — dust, haze, bird droppings, and partial shading reduce effective panel area and output.</span></li>
+							<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none shrink-0">—</span><span><strong class="text-[#171717] dark:text-white">Battery charging inefficiency</strong> — lithium batteries absorb charge at roughly 95–98% efficiency; lead-acid at 80–85%.</span></li>
+						</ul>
+						<p>
+							Note that the solar array is intentionally sized to replenish <em>one day's load</em>. It is not scaled up to match autonomy days — that would oversize the array unnecessarily. The battery bank covers multi-day cloudy periods; the array covers the average daily replenishment requirement.
+						</p>
+						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
+							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">1,200 Wh/day at 4.0 PSH: (1,200 × 1.3) / 4.0 = <strong class="text-[#171717] dark:text-white">390 W</strong> array rating.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Formula 4 -->
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4">
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded">04</span>
+							<h3 class="font-sans text-sm font-semibold text-[#171717] dark:text-white">MPPT Charge Controller Size</h3>
+						</div>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block mt-2">
+							mpptAmps = solarWatts / System Voltage
+						</code>
+					</div>
+					<div class="text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+						<p>
+							This formula derives the <strong class="text-[#171717] dark:text-white">output-side (battery-side) continuous current rating</strong> — the amperage the charge controller must be capable of delivering into the battery bank at the chosen system voltage. This is the figure used to select a controller model (e.g., a 20A, 30A, or 40A unit).
+						</p>
+						<p>
+							MPPT (Maximum Power Point Tracking) controllers accept a higher panel string voltage and step it down to battery voltage, transferring as much power as possible during the conversion. Because of this, the panel-side input current is lower than the battery-side output current — the controller trades voltage for current. The formula above gives the output current, which is what the controller's amperage rating refers to.
+						</p>
+						<p>
+							Always round up to the next standard commercial rating. Running a controller at its maximum rated current continuously shortens its service life; a 20–25% headroom is good practice.
+						</p>
+						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
+							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">390W array at 24V: 390 / 24 = 16.25A → round up to a <strong class="text-[#171717] dark:text-white">20A controller</strong>.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Formula 5 -->
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4">
+					<div class="flex flex-col gap-1">
+						<div class="flex items-center gap-2">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] px-1.5 py-0.5 rounded">05</span>
+							<h3 class="font-sans text-sm font-semibold text-[#171717] dark:text-white">Battery Recharge Time</h3>
+						</div>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block mt-2">
+							rechargeDays = Autonomy Days / 0.3
+						</code>
+					</div>
+					<div class="text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed flex flex-col gap-3">
+						<p>
+							This metric answers: after the battery bank has been fully drawn down over the autonomy period, how many days of average sun does it take to fully recover — while the daily load continues to run?
+						</p>
+						<p>
+							The derivation follows from Formula 3. Because the array is sized at 1.3× the daily load, it generates 30% more energy each day than it consumes. That daily surplus of 0.3 × Load Wh is what goes toward recharging the depleted battery. The total energy to recover is Load × Autonomy Days. So:
+						</p>
+						<code class="font-mono text-xs bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md px-4 py-3 text-[#171717] dark:text-[#888888] block">
+							rechargeDays = (Load × Autonomy) / (0.3 × Load) = Autonomy / 0.3
+						</code>
+						<p>
+							Notice that Load cancels out — recharge time depends only on the number of autonomy days and the 30% margin built into the array sizing. This is a direct consequence of the design choice in Formula 3: a larger load with a proportionally larger array recovers at the same rate as a small system.
+						</p>
+						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
+							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
+							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">2 days of autonomy: 2 / 0.3 = <strong class="text-[#171717] dark:text-white">6.7 days</strong> of average sun to full recovery. For Lead-Acid systems with 2+ days of autonomy, this extended partial-discharge period accelerates plate sulfation — consider a generator for faster recovery.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Scope & Limitations -->
+			<section class="flex flex-col gap-4">
+				<h2 class="font-sans text-base font-semibold tracking-tight text-[#171717] dark:text-white flex items-center gap-2">
+					<span class="w-1.5 h-3 bg-[#171717] dark:bg-white rounded-full inline-block"></span>
+					Scope &amp; limitations
+				</h2>
+				<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 flex flex-col gap-4 text-sm text-[#4d4d4d] dark:text-[#888888] leading-relaxed">
+					<p>
+						Amperage Labs is a <strong class="text-[#171717] dark:text-white">system-level sizing estimator</strong>. It answers the question: "how large does my battery bank and solar array need to be?" It is not a component-level design tool. The following are explicitly outside its scope:
+					</p>
+					<ul class="flex flex-col gap-2.5 list-none text-sm">
+						<li class="flex gap-3">
+							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
+							<span><strong class="text-[#171717] dark:text-white">Panel string configuration.</strong> Open-circuit voltage (Voc), minimum power point voltage (Vmp), temperature-corrected voltage rise, and maximum series string voltage for a given charge controller. These require your specific panel datasheet values.</span>
+						</li>
+						<li class="flex gap-3">
+							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
+							<span><strong class="text-[#171717] dark:text-white">Shading and orientation losses.</strong> Panel tilt angle, azimuth correction, inter-row shading, and horizon obstruction all affect real-world yield and require site-specific modelling.</span>
+						</li>
+						<li class="flex gap-3">
+							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
+							<span><strong class="text-[#171717] dark:text-white">Inverter sizing.</strong> VA (volt-ampere) rating, surge capacity for motor loads, and power factor correction are separate calculations based on your specific AC load profile.</span>
+						</li>
+						<li class="flex gap-3">
+							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
+							<span><strong class="text-[#171717] dark:text-white">Grid-tied and hybrid systems.</strong> Net metering, feed-in tariffs, backup power switching, and generator integration require grid-specific calculations not covered here.</span>
+						</li>
+						<li class="flex gap-3">
+							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
+							<span><strong class="text-[#171717] dark:text-white">Battery wiring configuration.</strong> How individual cells or batteries are wired in series and parallel to achieve the target system voltage and amp-hour rating is a separate step after this sizing exercise.</span>
+						</li>
+					</ul>
+					<p class="text-[#888888] dark:text-[#777777] text-xs">
+						For accurate Peak Sun Hours specific to your location and panel orientation, use the free <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">EU JRC PVGIS tool</a> or <a href="https://globalsolaratlas.info/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Global Solar Atlas</a>.
+					</p>
+				</div>
+			</section>
+
+			<!-- Back to calculator CTA -->
+			<div class="flex">
+				<a
+					href="/"
+					class="h-9 px-5 rounded-md text-xs font-medium text-white bg-[#171717] dark:bg-white dark:text-[#171717] hover:bg-black dark:hover:bg-[#e5e5e5] transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none flex items-center gap-2"
+				>
+					← Back to Calculator
+				</a>
+			</div>
+
+		</main>
+
+		<!-- Footer -->
+		<footer class="bg-white dark:bg-[#0a0a0a] border-t border-[#ebebeb] dark:border-[#222222] py-8 px-6 md:px-8 mt-auto z-10 text-xs font-sans text-[#888888] transition-colors duration-300">
+			<div class="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+				<div class="flex items-center gap-2">
+					<span class="font-semibold text-[#171717] dark:text-white">Amperage Labs.</span>
+					<span>© 2026. All rights reserved.</span>
+				</div>
+				<div class="flex gap-4 font-mono text-[10px]">
+					<span>SYS-VOLT: SELECTABLE</span>
+					<span>CHEM: LITHIUM/LEAD-ACID</span>
+					<span class="text-green-600 dark:text-green-500 flex items-center gap-1">
+						<span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+						CALCS: LIVE
+					</span>
+				</div>
+			</div>
+		</footer>
+
+	</div>
+</Layout>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const themeToggleBtn = document.getElementById('theme-toggle');
+		const iconSun = document.getElementById('icon-sun');
+		const iconMoon = document.getElementById('icon-moon');
+
+		function applyThemeIcons() {
+			const isDark = document.documentElement.classList.contains('dark');
+			if (iconSun && iconMoon) {
+				iconSun.classList.toggle('hidden', !isDark);
+				iconMoon.classList.toggle('hidden', isDark);
+			}
+			if (themeToggleBtn) {
+				themeToggleBtn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+			}
+		}
+
+		if (themeToggleBtn) {
+			themeToggleBtn.addEventListener('click', () => {
+				const isDark = document.documentElement.classList.toggle('dark');
+				localStorage.setItem('al-theme', isDark ? 'dark' : 'light');
+				applyThemeIcons();
+			});
+		}
+
+		applyThemeIcons();
+	});
+</script>

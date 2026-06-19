@@ -51,7 +51,6 @@ import Layout from '../layouts/Layout.astro';
 					<span class="text-white dark:text-[#171717] font-mono text-xs font-bold">A</span>
 				</div>
 				<span class="font-sans font-semibold text-sm tracking-tight text-[#171717] dark:text-white">Amperage Labs.</span>
-				<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#f5f5f5] dark:bg-[#1a1a1a] text-[#4d4d4d] dark:text-[#888888] border border-[#ebebeb] dark:border-[#222222]">v1.0.0</span>
 			</div>
 			
 			<div class="flex items-center gap-4">
@@ -545,84 +544,24 @@ import Layout from '../layouts/Layout.astro';
 						</ul>
 					</div>
 
-					<!-- Methodology & Assumptions Collapsible Card -->
-					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg shadow-[0px_1px_2px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
-						<button
-							type="button"
-							id="methodology-toggle"
-							class="w-full flex items-center justify-between p-6 text-left focus:outline-none"
-							aria-expanded="false"
-							aria-controls="methodology-drawer"
-						>
-							<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] dark:text-white">
-								Methodology &amp; assumptions.
-							</h3>
-							<svg id="methodology-chevron" class="w-4 h-4 text-[#888888] dark:text-[#555555] transform transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-							</svg>
-						</button>
-
-						<div
-							id="methodology-drawer"
-							class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out"
-							style="transition-property: max-height;"
-						>
-							<div class="px-6 pb-6 flex flex-col gap-5 text-xs text-[#4d4d4d] dark:text-[#888888]">
-								<div class="border-t border-[#ebebeb] dark:border-[#222222] pt-5 flex flex-col gap-4">
-
-									<!-- Formula 1 -->
-									<div class="flex flex-col gap-1">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Battery Bank Energy (storageWh)</span>
-										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">storageWh = (Daily Load × Autonomy Days) / DoD</code>
-										<p class="leading-relaxed">Your load multiplied by how many days the battery must sustain it, then divided by DoD to account for the unusable reserved portion. A Lithium battery at 80% DoD means only 80% of rated capacity is available — the remaining 20% is reserved to protect cycle life.</p>
-									</div>
-
-									<!-- Formula 2 -->
-									<div class="flex flex-col gap-1">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Battery Capacity (batteryAh)</span>
-										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">batteryAh = storageWh / System Voltage</code>
-										<p class="leading-relaxed">Watt-hours divided by system voltage (Wh = Ah × V). This gives the minimum Ah rating when purchasing batteries. At 24V, the same Wh requirement needs half the Ah of a 12V system — higher voltage systems use thinner wiring and lose less energy to heat.</p>
-									</div>
-
-									<!-- Formula 3 -->
-									<div class="flex flex-col gap-1">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Solar Array Size (solarWatts)</span>
-										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">solarWatts = (Daily Load × 1.3) / PSH</code>
-										<p class="leading-relaxed">The 1.3× multiplier accounts for ~30% real-world losses: wiring resistance, MPPT conversion, temperature derating, panel soiling, and inverter inefficiency. Peak Sun Hours (PSH) converts watt-hour demand into a panel wattage rating. The array is sized to replenish one day's load; the battery handles multi-day autonomy separately.</p>
-									</div>
-
-									<!-- Formula 4 -->
-									<div class="flex flex-col gap-1">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">MPPT Controller Size (mpptAmps)</span>
-										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">mpptAmps = solarWatts / System Voltage</code>
-										<p class="leading-relaxed">This is the output-side (battery-side) current rating — the current flowing from controller into the battery bank. Always round up to the next standard rating (20A, 30A, 40A). MPPT controllers step down from a higher panel voltage, so panel-side input current will be lower than this figure.</p>
-									</div>
-
-									<!-- Formula 5 -->
-									<div class="flex flex-col gap-1">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">Recharge Time (rechargeDays)</span>
-										<code class="font-mono text-[10px] bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded px-2 py-1 text-[#171717] dark:text-[#888888]">rechargeDays = Autonomy Days / 0.3</code>
-										<p class="leading-relaxed">Because the recommended array is sized at 1.3× daily load, it generates 30% more energy than it consumes each day. Dividing autonomy days by 0.3 gives the days of average sun needed to fully recover from a complete autonomy drawdown, while still running the daily load throughout.</p>
-									</div>
-
-									<!-- Limitations -->
-									<div class="flex flex-col gap-1.5 border-t border-[#ebebeb] dark:border-[#222222] pt-4">
-										<span class="font-sans font-semibold text-[#171717] dark:text-white text-[11px]">What this tool does not account for</span>
-										<ul class="flex flex-col gap-1 leading-relaxed list-none">
-											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Panel string configuration, Voc, or temperature voltage rise (use <a href="https://mppt.victronenergy.com/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Victron's MPPT calculator</a> for string-level sizing)</span></li>
-											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Shading losses or panel tilt and orientation correction</span></li>
-											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Inverter sizing (VA rating vs load power factor)</span></li>
-											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Grid-tied or hybrid systems with net metering</span></li>
-											<li class="flex gap-2"><span class="text-[#888888] dark:text-[#555555] select-none">—</span><span>Battery series/parallel wiring configuration to achieve system voltage</span></li>
-										</ul>
-									</div>
-
-									<!-- PSH source links -->
-									<p class="leading-relaxed text-[#888888] dark:text-[#777777]">
-										To find accurate PSH for your location, use the free <a href="https://re.jrc.ec.europa.eu/pvg_tools/en/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">EU JRC PVGIS tool</a> or <a href="https://globalsolaratlas.info/" target="_blank" rel="noopener noreferrer" class="text-[#0070f3] hover:underline">Global Solar Atlas</a>.
-									</p>
-								</div>
+					<!-- Methodology Link Card -->
+					<div class="bg-white dark:bg-[#111111] border border-[#ebebeb] dark:border-[#222222] rounded-lg p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.02)] dark:shadow-none transition-colors duration-300">
+						<div class="flex items-start justify-between gap-4">
+							<div class="flex flex-col gap-1.5">
+								<h3 class="font-sans text-sm font-semibold tracking-tight text-[#171717] dark:text-white">
+									Methodology &amp; assumptions.
+								</h3>
+								<p class="text-xs text-[#4d4d4d] dark:text-[#888888] leading-relaxed max-w-sm">
+									Every output is traceable to a named formula. Read the full derivations, assumptions, and scope of this calculator.
+								</p>
 							</div>
+							<a
+								href="/methodology"
+								class="shrink-0 h-8 px-3 rounded-md text-xs font-medium text-[#171717] dark:text-white border border-[#ebebeb] dark:border-[#333333] bg-white dark:bg-[#1a1a1a] hover:bg-[#f5f5f5] dark:hover:bg-[#222222] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white flex items-center gap-1.5"
+								aria-label="Read full methodology"
+							>
+								Read more →
+							</a>
 						</div>
 					</div>
 				</section>
@@ -1276,25 +1215,6 @@ import Layout from '../layouts/Layout.astro';
 			});
 		}
 		
-		// Methodology Drawer Toggle
-		const methodologyToggleBtn = document.getElementById('methodology-toggle');
-		const methodologyDrawer = document.getElementById('methodology-drawer');
-		const methodologyChevron = document.getElementById('methodology-chevron');
-
-		if (methodologyToggleBtn && methodologyDrawer && methodologyChevron) {
-			methodologyToggleBtn.addEventListener('click', () => {
-				const isExpanded = methodologyToggleBtn.getAttribute('aria-expanded') === 'true';
-				methodologyToggleBtn.setAttribute('aria-expanded', (!isExpanded).toString());
-				if (!isExpanded) {
-					methodologyDrawer.style.maxHeight = methodologyDrawer.scrollHeight + 'px';
-					methodologyChevron.classList.add('rotate-180');
-				} else {
-					methodologyDrawer.style.maxHeight = '0px';
-					methodologyChevron.classList.remove('rotate-180');
-				}
-			});
-		}
-
 		// Dark Mode Toggle
 		const themeToggleBtn = document.getElementById('theme-toggle');
 		const iconSun = document.getElementById('icon-sun');

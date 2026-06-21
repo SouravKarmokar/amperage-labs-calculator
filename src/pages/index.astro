@@ -14,27 +14,10 @@ import Layout from '../layouts/Layout.astro';
 	</script>
 
 	<!--
-	=====================================================================
-	FAVICON — add this to your Layout.astro <head>:
-	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-	Place a favicon.svg file in your /public folder.
-	Simplest version: an SVG with the letter "A" on a dark background.
-	=====================================================================
-
-	OG / SOCIAL META TAGS — add these to your Layout.astro <head>:
-	<meta property="og:title" content="Off-Grid Solar Battery & MPPT Sizing Calculator | Amperage Labs" />
-	<meta property="og:description" content="Size your off-grid solar battery bank and MPPT charge controller in seconds. Free, transparent, shows live maths." />
-	<meta property="og:url" content="https://yourdomain.com" />
-	<meta property="og:image" content="https://yourdomain.com/og-image.png" />
-	<meta property="og:type" content="website" />
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Off-Grid Solar Battery & MPPT Sizing Calculator | Amperage Labs" />
-	<meta name="twitter:description" content="Size your off-grid solar battery bank and MPPT charge controller in seconds. Free, transparent, shows live maths." />
-	<meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-	Replace yourdomain.com with your actual paid domain once live.
-	og-image.png should be a 1200x630px screenshot of the dashboard.
-	=====================================================================
+	TODO: favicon — /public/favicon.svg, then <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+	TODO: OG tags once domain is live (og:title, og:description, og:url, og:image 1200x630, twitter:card)
 	-->
+
 	<div class="relative min-h-screen flex flex-col overflow-x-hidden bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
 		<!-- Mesh gradient backdrop - Vercel style atmospheric glow -->
 		<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none overflow-hidden z-0" aria-hidden="true">
@@ -139,6 +122,17 @@ import Layout from '../layouts/Layout.astro';
 									<button type="button" id="preset-high" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										High (Home: 5,000 Wh)
 									</button>
+								</div>
+
+								<!-- Daily Load Warning Banner -->
+								<div id="load-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-1">
+									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+									</svg>
+									<div class="flex flex-col gap-0.5">
+										<span class="font-semibold">Safety bounds active</span>
+										<span id="load-warning-message">Daily Load clamped to safety threshold.</span>
+									</div>
 								</div>
 							</div>
 
@@ -247,6 +241,17 @@ import Layout from '../layouts/Layout.astro';
 										USA (4.0)
 									</button>
 								</div>
+
+								<!-- PSH Warning Banner -->
+								<div id="psh-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-1">
+									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+									</svg>
+									<div class="flex flex-col gap-0.5">
+										<span class="font-semibold">Safety bounds active</span>
+										<span id="psh-warning-message">Peak Sun Hours clamped to safety threshold.</span>
+									</div>
+								</div>
 							</div>
 
 							<!-- Advanced Settings Collapsible Drawer (Details/Accordion pattern) -->
@@ -305,27 +310,6 @@ import Layout from '../layouts/Layout.astro';
 									</div>
 								</div>
 								
-								<!-- PSH Warning Banner -->
-								<div id="psh-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-3">
-									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-									</svg>
-									<div class="flex flex-col gap-0.5">
-										<span class="font-semibold">Safety bounds active</span>
-										<span id="psh-warning-message">Peak Sun Hours clamped to safety threshold.</span>
-									</div>
-								</div>
-
-								<!-- Daily Load Warning Banner -->
-								<div id="load-warning-banner" class="hidden p-3 rounded-md bg-[#ffefcf] dark:bg-[#2a1f00] border border-[#f5a623] dark:border-[#6b4800] text-xs text-[#ab570a] dark:text-[#f5a623] flex items-start gap-2 transition-all duration-300 mt-2">
-									<svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-									</svg>
-									<div class="flex flex-col gap-0.5">
-										<span class="font-semibold">Safety bounds active</span>
-										<span id="load-warning-message">Daily Load clamped to safety threshold.</span>
-									</div>
-								</div>
 							</div>
 							
 						</div>
@@ -500,7 +484,7 @@ import Layout from '../layouts/Layout.astro';
 									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Estimated solar array size assuming 30% system losses.
 									</p>
-									<!-- AFFILIATE LINK: Replace YOUR_AMAZON_TAG with your Amazon Associates tag -->
+									<!-- affiliate: panels -->
 									<a
 										href="https://www.amazon.com/s?k=100w+monocrystalline+solar+panel&tag=YOUR_AMAZON_TAG"
 										target="_blank"
@@ -530,7 +514,7 @@ import Layout from '../layouts/Layout.astro';
 									<p class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight">
 										Minimum charge controller size. We recommend rounding up to next standard rating.
 									</p>
-									<!-- AFFILIATE LINK: Replace YOUR_AMAZON_TAG with your Amazon Associates tag -->
+									<!-- affiliate: mppt -->
 									<a
 										href="https://www.amazon.com/s?k=mppt+solar+charge+controller&tag=YOUR_AMAZON_TAG"
 										target="_blank"
@@ -609,7 +593,7 @@ import Layout from '../layouts/Layout.astro';
 							</li>
 							<li class="flex gap-2">
 								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">04.</span>
-								<span><strong class="text-[#171717] dark:text-white">Battery Chemistry:</strong> LiFePO4 lasts 2,000–5,000 cycles vs 300–500 for Lead-Acid, making it cheaper long-term despite the higher upfront cost. <!-- AFFILIATE: Replace YOUR_AMAZON_TAG --><a href="https://www.amazon.com/s?k=lifepo4+battery+12v&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener noreferrer sponsored" class="text-[#0070f3] hover:underline">Browse LiFePO4 batteries →</a></span>
+								<span><strong class="text-[#171717] dark:text-white">Battery Chemistry:</strong> LiFePO4 lasts 2,000–5,000 cycles vs 300–500 for Lead-Acid, making it cheaper long-term despite the higher upfront cost. <!-- affiliate: battery --><a href="https://www.amazon.com/s?k=lifepo4+battery+12v&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener noreferrer sponsored" class="text-[#0070f3] hover:underline">Browse LiFePO4 batteries →</a></span>
 							</li>
 						</ul>
 					</div>
@@ -827,7 +811,7 @@ import Layout from '../layouts/Layout.astro';
 			}, 3000);
 		}
 
-		// Calculate Sizing Metrics using the user-specified formulas:
+		// Core sizing formulas:
 		// 1. storageWh = (Load * Autonomy) / DoD
 		// 2. batteryAh = storageWh / Voltage
 		// 3. solarWatts = (Load * 1.3) / PSH

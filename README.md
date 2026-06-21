@@ -65,4 +65,4 @@ The sizing formulas follow standard off-grid design practice — battery bank si
 
 ## License
 
-MIT
+Source is public for portfolio and transparency purposes. All rights reserved — please don't redistribute or deploy this as your own without permission.

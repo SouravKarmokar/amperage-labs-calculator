@@ -28,7 +28,8 @@ import Layout from '../layouts/Layout.astro';
 
 			<div class="flex items-center gap-4">
 				<a href="/" class="font-mono text-xs text-[#4d4d4d] dark:text-[#888888] hover:text-[#171717] dark:hover:text-white transition-colors flex items-center gap-1.5">
-					← Back to Calculator
+					<span class="sm:hidden">← Back</span>
+					<span class="hidden sm:inline">← Back to Calculator</span>
 				</a>
 
 				<!-- Dark Mode Toggle -->
@@ -293,7 +294,7 @@ import Layout from '../layouts/Layout.astro';
 					<span class="font-semibold text-[#171717] dark:text-white">Amperage Labs.</span>
 					<span>© 2026. All rights reserved.</span>
 				</div>
-				<div class="flex gap-4 font-mono text-[10px]">
+				<div class="flex flex-wrap justify-center gap-x-4 gap-y-1 font-mono text-[10px]">
 					<span>SYS-VOLT: SELECTABLE</span>
 					<span>CHEM: LITHIUM/LEAD-ACID</span>
 					<span class="text-green-600 dark:text-green-500 flex items-center gap-1">

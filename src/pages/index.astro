@@ -655,8 +655,8 @@ body {
 
     function step() {
       ctx.clearRect(0, 0, w, h);
-      const dotColor = isDark() ? 'rgba(0,223,216,0.55)' : 'rgba(0,112,243,0.4)';
-      const lineColorBase = isDark() ? '0,223,216' : '0,112,243';
+      const dotColor = isDark() ? 'rgba(0,223,216,0.55)' : 'rgba(30,41,59,0.5)';
+      const lineColorBase = isDark() ? '0,223,216' : '30,41,59';
       const viewTop = window.scrollY;
 
       for (let i = 0; i < nodes.length; i++) {
@@ -669,14 +669,13 @@ body {
         n.y = Math.max(0, Math.min(window.innerHeight, n.y));
       }
 
-for (let i = 0; i < nodes.length; i++) {
+      for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i], b = nodes[j];
           const dx = a.x - b.x, dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < MAX_LINK_DIST) {
-            // Changed from 0.18 to 0.42 to bring out the line visibility
-            const alpha = (1 - dist / MAX_LINK_DIST) * 0.42; 
+            const alpha = (1 - dist / MAX_LINK_DIST) * 0.18;
             ctx.strokeStyle = `rgba(${lineColorBase},${alpha})`;
             ctx.lineWidth = 1;
             ctx.beginPath();

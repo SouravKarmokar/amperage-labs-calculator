@@ -27,20 +27,13 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 
 		<!-- Top Navigation Bar -->
-            <header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#ebebeb] dark:border-[#222222] h-16 flex items-center justify-between px-6 md:px-8 transition-colors duration-300">
+		<header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#ebebeb] dark:border-[#222222] h-16 flex items-center justify-between px-6 md:px-8 transition-colors duration-300">
 			<div class="flex items-center gap-3">
-				<a href="/" class="flex items-center gap-3 focus-visible:outline-none hover:opacity-80 transition-opacity">
-					<div class="w-6 h-6 bg-[#171717] dark:bg-white flex items-center justify-center rounded-sm" aria-hidden="true">
-						<span class="text-white dark:text-[#171717] font-mono text-xs font-bold">A</span>
-					</div>
-					<span class="font-sans font-semibold text-sm tracking-tight text-[#171717] dark:text-white">Amperage Labs</span>
-				</a>
-
-				<span class="text-[#ebebeb] dark:text-[#333333] select-none">/</span>
-
-				<a href="/" class="font-mono text-xs text-[#888888] dark:text-[#555555] hover:text-[#171717] dark:hover:text-white transition-colors">
-					← Back to Homepage
-				</a>
+				<!-- Brand logo and Title -->
+				<div class="w-6 h-6 bg-[#171717] dark:bg-white flex items-center justify-center rounded-sm" aria-hidden="true">
+					<span class="text-white dark:text-[#171717] font-mono text-xs font-bold">A</span>
+				</div>
+				<span class="font-sans font-semibold text-sm tracking-tight text-[#171717] dark:text-white">Amperage Labs.</span>
 			</div>
 			
 			<div class="flex items-center gap-4">
@@ -115,7 +108,7 @@ import Layout from '../layouts/Layout.astro';
 									</div>
 								</div>
 								<p class="text-[11px] text-[#888888]/80 dark:text-[#777777] leading-tight">
-									Load: 24h consumption
+									Load: total 24h energy drawn from the battery. For AC loads through an inverter, add ~9% to account for inverter conversion losses (divide appliance Wh by 0.92).
 								</p>
 								
 								<!-- Presets Row -->
@@ -601,6 +594,10 @@ import Layout from '../layouts/Layout.astro';
 							<li class="flex gap-2">
 								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">04.</span>
 								<span><strong class="text-[#171717] dark:text-white">Battery Chemistry:</strong> LiFePO4 lasts 2,000–5,000 cycles vs 300–500 for Lead-Acid, making it cheaper long-term despite the higher upfront cost. <!-- affiliate: battery --><a href="https://www.amazon.com/s?k=lifepo4+battery+12v&tag=YOUR_AMAZON_TAG" target="_blank" rel="noopener noreferrer sponsored" class="text-[#0070f3] hover:underline">Browse LiFePO4 batteries →</a></span>
+							</li>
+							<li class="flex gap-2">
+								<span class="font-mono text-[#888888] dark:text-[#777777] select-none" aria-hidden="true">05.</span>
+								<span><strong class="text-[#171717] dark:text-white">AC Load Correction:</strong> This calculator sizes the battery for energy drawn from the battery terminals — not energy consumed at the plug. If your loads run through an inverter (230V AC appliances), your battery must supply roughly 8–10% more than your appliances actually consume, because inverters are not 100% efficient. A home consuming 1,200 Wh/day at the plug draws approximately 1,200 ÷ 0.92 = <strong class="text-[#171717] dark:text-white">1,304 Wh/day</strong> from the battery. Enter the battery-side figure here for accurate sizing.</span>
 							</li>
 						</ul>
 					</div>

@@ -110,6 +110,9 @@ import Layout from '../layouts/Layout.astro';
 						<p>
 							Dividing by Depth of Discharge (DoD) accounts for the fact that not all of a battery's rated capacity is safely usable. A 100 Ah LiFePO4 battery at 80% DoD delivers 80 Ah of usable energy; the remaining 20 Ah is held in reserve to protect the cells from over-discharge and extend cycle life. Without this correction, you would be sizing for the usable portion only and inadvertently over-stressing the battery on every cycle.
 						</p>
+						<p>
+							<strong class="text-[#171717] dark:text-white">How Daily Load is calculated.</strong> The calculator accepts AC loads and DC loads as separate inputs. DC loads draw directly from the battery with no conversion loss. AC loads pass through an inverter, which introduces a real-world efficiency loss of approximately 8–10%. The tool automatically corrects for this by dividing AC load by 0.92 before adding the DC load, giving the true battery-side energy draw. Users do not need to apply this correction manually.
+						</p>
 						<div class="bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] rounded-md p-4 flex flex-col gap-1">
 							<span class="font-mono text-[10px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Example</span>
 							<p class="text-xs text-[#4d4d4d] dark:text-[#777777]">1,200 Wh/day × 2 days = 2,400 Wh needed. At 80% DoD: 2,400 / 0.80 = <strong class="text-[#171717] dark:text-white">3,000 Wh</strong> total bank size required.</p>
@@ -258,7 +261,7 @@ import Layout from '../layouts/Layout.astro';
 						</li>
 						<li class="flex gap-3">
 							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>
-							<span><strong class="text-[#171717] dark:text-white">Inverter sizing.</strong> VA (volt-ampere) rating, surge capacity for motor loads, and power factor correction are separate calculations based on your specific AC load profile.</span>
+							<span><strong class="text-[#171717] dark:text-white">Inverter sizing.</strong> VA (volt-ampere) rating, surge capacity for motor loads, and power factor correction are separate calculations based on your specific AC load profile. This tool handles inverter efficiency correction automatically through the AC/DC load split, but does not size the inverter itself.</span>
 						</li>
 						<li class="flex gap-3">
 							<span class="text-[#888888] dark:text-[#555555] select-none shrink-0 mt-0.5">—</span>

@@ -114,38 +114,75 @@ import Layout from '../layouts/Layout.astro';
 									</div>
 								</div>
 								<p class="text-[11px] text-[#888888] dark:text-[#777777] leading-tight">
-									Load: total 24h energy drawn from the battery. For AC loads through an inverter, divide your appliance Wh total by 0.92 to account for inverter conversion losses or use the toggle below.
+									Enter your AC and DC loads separately. AC loads run through an inverter and are corrected for inverter efficiency. DC loads draw directly from the battery with no conversion loss.
 								</p>
 
-								<!-- AC Correction Toggle -->
-								<label class="flex items-start gap-2 cursor-pointer group mt-1" id="ac-mode-label">
-									<div class="relative mt-0.5 flex-shrink-0">
+								<!-- AC Load Input -->
+								<div class="flex flex-col gap-1.5">
+									<div class="flex justify-between items-center">
+										<label for="ac-load" class="text-[11px] font-medium text-[#4d4d4d] dark:text-[#888888] flex items-center gap-1.5">
+											<span class="w-2 h-2 rounded-full bg-[#0070f3] inline-block flex-shrink-0"></span>
+											AC Loads <span class="text-[#888888] dark:text-[#555555] font-normal">(through inverter)</span>
+										</label>
+										<span class="font-mono text-[10px] text-[#888888] dark:text-[#777777]">Wh / day</span>
+									</div>
+									<div class="relative">
 										<input
-											type="checkbox"
-											id="ac-mode-toggle"
-											class="sr-only peer"
-											aria-label="Apply AC inverter efficiency correction"
+											type="number"
+											id="ac-load"
+											name="ac-load"
+											value="1000"
+											min="0"
+											max="99999"
+											step="10"
+											inputmode="numeric"
+											autocomplete="off"
+											class="w-full h-10 px-3 pr-10 bg-white dark:bg-[#1a1a1a] border border-[#0070f3]/40 dark:border-[#0070f3]/30 rounded-sm text-sm text-[#171717] dark:text-white placeholder-[#888888] dark:placeholder-[#555555] focus:outline-none focus:ring-1 focus:ring-[#0070f3] focus:border-[#0070f3] transition-all font-mono"
+											placeholder="0"
 										/>
-										<div class="w-8 h-4 bg-[#e5e5e5] dark:bg-[#333333] rounded-full peer-checked:bg-[#0070f3] transition-colors duration-200"></div>
-										<div class="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm transition-transform duration-200 peer-checked:translate-x-4"></div>
+										<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+											<span class="font-mono text-xs text-[#888888] dark:text-[#777777]">Wh</span>
+										</div>
 									</div>
-									<div class="flex flex-col gap-0.5">
-										<span class="text-[11px] font-medium text-[#4d4d4d] dark:text-[#888888] group-hover:text-[#171717] dark:group-hover:text-white transition-colors leading-tight">
-											My loads are AC (through an inverter)
-										</span>
-										<span class="text-[10px] text-[#888888] dark:text-[#777777] leading-tight font-mono" id="ac-mode-note">
-											Automatically applies ÷0.92 inverter efficiency correction
-										</span>
-									</div>
-								</label>
-
-								<!-- AC correction active banner -->
-								<div id="ac-correction-banner" class="hidden items-start gap-2 p-2.5 rounded-md bg-[#eff6ff] dark:bg-[#0c1a2e] border border-[#0070f3]/30 dark:border-[#0070f3]/40 text-[10px] font-mono text-[#0070f3] dark:text-[#60a5fa]">
-									<svg class="w-3.5 h-3.5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-									</svg>
-									<span id="ac-correction-text">AC correction applied: using <strong id="ac-corrected-value">—</strong> Wh/day for calculations</span>
+									<p class="text-[10px] text-[#888888] dark:text-[#777777] font-mono">Fans, TV, fridge, lights running on 230V AC mains</p>
 								</div>
+
+								<!-- DC Load Input -->
+								<div class="flex flex-col gap-1.5">
+									<div class="flex justify-between items-center">
+										<label for="dc-load" class="text-[11px] font-medium text-[#4d4d4d] dark:text-[#888888] flex items-center gap-1.5">
+											<span class="w-2 h-2 rounded-full bg-[#22c55e] inline-block flex-shrink-0"></span>
+											DC Loads <span class="text-[#888888] dark:text-[#555555] font-normal">(direct from battery)</span>
+										</label>
+										<span class="font-mono text-[10px] text-[#888888] dark:text-[#777777]">Wh / day</span>
+									</div>
+									<div class="relative">
+										<input
+											type="number"
+											id="dc-load"
+											name="dc-load"
+											value="200"
+											min="0"
+											max="99999"
+											step="10"
+											inputmode="numeric"
+											autocomplete="off"
+											class="w-full h-10 px-3 pr-10 bg-white dark:bg-[#1a1a1a] border border-[#22c55e]/40 dark:border-[#22c55e]/30 rounded-sm text-sm text-[#171717] dark:text-white placeholder-[#888888] dark:placeholder-[#555555] focus:outline-none focus:ring-1 focus:ring-[#22c55e] focus:border-[#22c55e] transition-all font-mono"
+											placeholder="0"
+										/>
+										<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+											<span class="font-mono text-xs text-[#888888] dark:text-[#777777]">Wh</span>
+										</div>
+									</div>
+									<p class="text-[10px] text-[#888888] dark:text-[#777777] font-mono">12V DC lights, USB chargers, DC fans running directly off battery</p>
+								</div>
+
+								<!-- Effective load summary banner -->
+								<div id="load-summary-banner" class="flex items-center gap-2 p-2.5 rounded-md bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[10px] font-mono text-[#4d4d4d] dark:text-[#888888]">
+									<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+									<span>Battery draw: AC (<span id="ac-corrected-display">1,087</span> Wh ÷0.92) + DC (<span id="dc-display">200</span> Wh) = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
+								</div>
+
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Load Presets">
 									<button type="button" id="preset-low" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Low (Cabin: 500 Wh)
@@ -688,7 +725,6 @@ import Layout from '../layouts/Layout.astro';
 	// Run script on DOM content load
 	document.addEventListener('DOMContentLoaded', () => {
 		// Element DOM references
-		const dailyLoadInput = document.getElementById('daily-load') as HTMLInputElement | null;
 		const voltageButtons = document.querySelectorAll('[data-voltage]');
 		const batteryButtons = document.querySelectorAll('[data-battery]');
 		const autonomyButtons = document.querySelectorAll('[data-autonomy]');
@@ -705,9 +741,11 @@ import Layout from '../layouts/Layout.astro';
 		const resultControllerText = document.getElementById('result-controller');
 		const resultRechargeText = document.getElementById('result-recharge');
 
-		const acModeToggle = document.getElementById('ac-mode-toggle') as HTMLInputElement | null;
-		const acCorrectionBanner = document.getElementById('ac-correction-banner');
-		const acCorrectedValue = document.getElementById('ac-corrected-value');
+		const acLoadInput = document.getElementById('ac-load') as HTMLInputElement | null;
+		const dcLoadInput = document.getElementById('dc-load') as HTMLInputElement | null;
+		const acCorrectedDisplay = document.getElementById('ac-corrected-display');
+		const dcDisplay = document.getElementById('dc-display');
+		const effectiveLoadDisplay = document.getElementById('effective-load-display');
 		
 		const svgUsableFill = document.getElementById('svg-usable-fill');
 		const svgReserveFill = document.getElementById('svg-reserve-fill');
@@ -732,7 +770,8 @@ import Layout from '../layouts/Layout.astro';
 		
 		// Default Constants
 		const DEFAULTS = {
-			load: 1200,
+			acLoad: 1000,
+			dcLoad: 200,
 			voltage: 24,
 			battery: 'lithium',
 			autonomy: 2,
@@ -761,11 +800,13 @@ import Layout from '../layouts/Layout.astro';
 			try {
 				const params = new URLSearchParams(window.location.search);
 				
-				if (params.has('load') && dailyLoadInput) {
-					const loadVal = parseInt(params.get('load') || '', 10);
-					if (!isNaN(loadVal) && loadVal > 0) {
-						dailyLoadInput.value = loadVal.toString();
-					}
+				if (params.has('acload') && acLoadInput) {
+					const acVal = parseInt(params.get('acload') || '', 10);
+					if (!isNaN(acVal) && acVal >= 0) acLoadInput.value = acVal.toString();
+				}
+				if (params.has('dcload') && dcLoadInput) {
+					const dcVal = parseInt(params.get('dcload') || '', 10);
+					if (!isNaN(dcVal) && dcVal >= 0) dcLoadInput.value = dcVal.toString();
 				}
 				
 				if (params.has('voltage')) {
@@ -809,9 +850,6 @@ import Layout from '../layouts/Layout.astro';
 					}
 				}
 
-				if (params.has('ac') && params.get('ac') === '1' && acModeToggle) {
-					acModeToggle.checked = true;
-				}
 			} catch (e) {
 				console.error('Failed to parse URL query params', e);
 			}
@@ -864,13 +902,19 @@ import Layout from '../layouts/Layout.astro';
 		// 4. mpptAmps = solarWatts / Voltage
 		// 5. rechargeDays = Autonomy / 0.3
 		function calculate() {
-			if (!dailyLoadInput || !pshInput || !resultWhText || !resultAhText || !resultSolarText || !resultControllerText || !resultRechargeText) return;
+			if (!acLoadInput || !pshInput || !resultWhText || !resultAhText || !resultSolarText || !resultControllerText || !resultRechargeText) return;
 			
 			// Parse inputs
-			let load = parseInt(dailyLoadInput.value, 10);
-			if (isNaN(load) || load <= 0) {
-				load = 0;
-			}
+			const acLoad = Math.max(0, parseInt(acLoadInput?.value || '0', 10) || 0);
+			const dcLoad = Math.max(0, parseInt(dcLoadInput?.value || '0', 10) || 0);
+			const acCorrected = Math.round(acLoad / 0.92);
+			const effectiveLoad = acCorrected + dcLoad;
+			const load = effectiveLoad; // total battery-side draw
+
+			// Update summary banner
+			if (acCorrectedDisplay) acCorrectedDisplay.textContent = formatNumber(acCorrected);
+			if (dcDisplay) dcDisplay.textContent = formatNumber(dcLoad);
+			if (effectiveLoadDisplay) effectiveLoadDisplay.textContent = formatNumber(effectiveLoad);
 			
 			let psh = parseFloat(pshInput.value);
 			if (isNaN(psh) || psh <= 0) {
@@ -940,20 +984,7 @@ import Layout from '../layouts/Layout.astro';
 			}
 			
 			// Formula 1: storageWh = (Load * Autonomy) / DoD
-			// Apply AC inverter efficiency correction if toggle is active
-			let effectiveLoad = load;
-			const isAcMode = acModeToggle?.checked ?? false;
-			if (isAcMode && load > 0) {
-				effectiveLoad = Math.round(load / 0.92);
-				// Show correction banner with corrected value
-				if (acCorrectionBanner) acCorrectionBanner.classList.remove('hidden');
-				if (acCorrectionBanner) acCorrectionBanner.classList.add('flex');
-				if (acCorrectedValue) acCorrectedValue.textContent = formatNumber(effectiveLoad);
-			} else {
-				if (acCorrectionBanner) acCorrectionBanner.classList.add('hidden');
-				if (acCorrectionBanner) acCorrectionBanner.classList.remove('flex');
-			}
-
+			// effectiveLoad = (acLoad / 0.92) + dcLoad — computed above before guard rails
 			const storageWh = (effectiveLoad * selectedAutonomy) / currentDod;
 			
 			// Formula 2: batteryAh = storageWh / Voltage
@@ -1188,28 +1219,20 @@ import Layout from '../layouts/Layout.astro';
 		}
 		
 		// Daily Load Input Listener
-		if (dailyLoadInput) {
-			dailyLoadInput.addEventListener('input', () => {
-				calculate();
-			});
-			
-			// Clean negative values or letters on blur (kept in sync with BOUNDS used in calculate())
-			dailyLoadInput.addEventListener('blur', () => {
-				let val = parseInt(dailyLoadInput.value, 10);
-				if (isNaN(val) || val <= 0) {
-					dailyLoadInput.value = BOUNDS.loadMin.toString(); // fallback floor
-				} else if (val > BOUNDS.loadMax) {
-					dailyLoadInput.value = BOUNDS.loadMax.toString(); // clamp visual input display on blur
-				} else if (val < BOUNDS.loadMin) {
-					dailyLoadInput.value = BOUNDS.loadMin.toString(); // clamp visual input display on blur
-				}
+		// AC and DC Load Input Listeners
+		if (acLoadInput) {
+			acLoadInput.addEventListener('input', () => calculate());
+			acLoadInput.addEventListener('blur', () => {
+				let val = parseInt(acLoadInput.value, 10);
+				if (isNaN(val) || val < 0) acLoadInput.value = '0';
 				calculate();
 			});
 		}
-
-		// AC Mode Toggle Listener
-		if (acModeToggle) {
-			acModeToggle.addEventListener('change', () => {
+		if (dcLoadInput) {
+			dcLoadInput.addEventListener('input', () => calculate());
+			dcLoadInput.addEventListener('blur', () => {
+				let val = parseInt(dcLoadInput.value, 10);
+				if (isNaN(val) || val < 0) dcLoadInput.value = '0';
 				calculate();
 			});
 		}
@@ -1232,27 +1255,30 @@ import Layout from '../layouts/Layout.astro';
 		}
 		
 		// Load presets Click Listeners
-		if (presetLowBtn && dailyLoadInput) {
+		if (presetLowBtn && acLoadInput) {
 			presetLowBtn.addEventListener('click', () => {
-				dailyLoadInput.value = '500';
+				if (acLoadInput) acLoadInput.value = '400';
+				if (dcLoadInput) dcLoadInput.value = '100';
 				calculate();
-				showToast('Applied Load Preset: Cabin (500 Wh).');
+				showToast('Applied Load Preset: Cabin (400 Wh AC + 100 Wh DC).');
 			});
 		}
 		
-		if (presetMedBtn && dailyLoadInput) {
+		if (presetMedBtn && acLoadInput) {
 			presetMedBtn.addEventListener('click', () => {
-				dailyLoadInput.value = '1500';
+				if (acLoadInput) acLoadInput.value = '1300';
+				if (dcLoadInput) dcLoadInput.value = '200';
 				calculate();
-				showToast('Applied Load Preset: RV / Tiny Home (1,500 Wh).');
+				showToast('Applied Load Preset: RV / Tiny Home (1,300 Wh AC + 200 Wh DC).');
 			});
 		}
 		
-		if (presetHighBtn && dailyLoadInput) {
+		if (presetHighBtn && acLoadInput) {
 			presetHighBtn.addEventListener('click', () => {
-				dailyLoadInput.value = '5000';
+				if (acLoadInput) acLoadInput.value = '4500';
+				if (dcLoadInput) dcLoadInput.value = '500';
 				calculate();
-				showToast('Applied Load Preset: Residential (5,000 Wh).');
+				showToast('Applied Load Preset: Residential (4,500 Wh AC + 500 Wh DC).');
 			});
 		}
 		
@@ -1284,18 +1310,15 @@ import Layout from '../layouts/Layout.astro';
 		// Share Configuration Button (Copies URL to Clipboard with state params)
 		if (shareConfigBtn) {
 			shareConfigBtn.addEventListener('click', () => {
-				const loadVal = dailyLoadInput ? dailyLoadInput.value : '1200';
 				const pshVal = pshInput ? pshInput.value : '4.0';
 				const shareUrl = new URL(window.location.origin + window.location.pathname);
-				shareUrl.searchParams.set('load', loadVal);
+				shareUrl.searchParams.set('acload', acLoadInput?.value || '0');
+				shareUrl.searchParams.set('dcload', dcLoadInput?.value || '0');
 				shareUrl.searchParams.set('voltage', selectedVoltage.toString());
 				shareUrl.searchParams.set('battery', selectedBattery);
 				shareUrl.searchParams.set('autonomy', selectedAutonomy.toString());
 				shareUrl.searchParams.set('psh', pshVal);
 				shareUrl.searchParams.set('dod', currentDod.toString());
-				if (acModeToggle?.checked) {
-					shareUrl.searchParams.set('ac', '1');
-				}
 				
 				// Copy to clipboard
 				navigator.clipboard.writeText(shareUrl.toString()).then(() => {
@@ -1317,15 +1340,11 @@ import Layout from '../layouts/Layout.astro';
 				currentDod = DEFAULTS.dodLithium;
 				isManualDod = false;
 				
-				// Reset AC mode toggle
-				if (acModeToggle) acModeToggle.checked = false;
-				if (acCorrectionBanner) {
-					acCorrectionBanner.classList.add('hidden');
-					acCorrectionBanner.classList.remove('flex');
-				}
+				// Reset AC/DC load inputs
+				if (acLoadInput) acLoadInput.value = DEFAULTS.acLoad.toString();
+				if (dcLoadInput) dcLoadInput.value = DEFAULTS.dcLoad.toString();
 				
 				// Reset UI inputs
-				if (dailyLoadInput) dailyLoadInput.value = DEFAULTS.load.toString();
 				if (pshInput) pshInput.value = DEFAULTS.psh.toString();
 				if (dodSlider) dodSlider.value = Math.round(DEFAULTS.dodLithium * 100).toString();
 				if (dodValueText) dodValueText.innerText = `${Math.round(DEFAULTS.dodLithium * 100)}%`;

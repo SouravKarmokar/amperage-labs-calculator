@@ -162,7 +162,7 @@ import Layout from '../layouts/Layout.astro';
 								<!-- Effective load summary banner -->
 								<div id="load-summary-banner" class="flex items-center gap-2 p-2.5 rounded-md bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[10px] font-mono text-[#4d4d4d] dark:text-[#888888]">
 									<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-									<span>Battery draw: AC (<span id="ac-corrected-display">1,087</span> Wh ÷0.92) + DC (<span id="dc-display">200</span> Wh) = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
+									<span>Battery draw: (<span id="ac-input-display">1,000</span> ÷ 0.92) + <span id="dc-display">200</span> = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
 								</div>
 
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Load Presets">
@@ -725,7 +725,7 @@ import Layout from '../layouts/Layout.astro';
 
 		const acLoadInput = document.getElementById('ac-load') as HTMLInputElement | null;
 		const dcLoadInput = document.getElementById('dc-load') as HTMLInputElement | null;
-		const acCorrectedDisplay = document.getElementById('ac-corrected-display');
+		const acCorrectedDisplay = document.getElementById('ac-input-display');
 		const dcDisplay = document.getElementById('dc-display');
 		const effectiveLoadDisplay = document.getElementById('effective-load-display');
 		
@@ -894,7 +894,7 @@ import Layout from '../layouts/Layout.astro';
 			const load = effectiveLoad; // total battery-side draw
 
 			// Update summary banner
-			if (acCorrectedDisplay) acCorrectedDisplay.textContent = formatNumber(acCorrected);
+			if (acCorrectedDisplay) acCorrectedDisplay.textContent = formatNumber(acLoad);
 			if (dcDisplay) dcDisplay.textContent = formatNumber(dcLoad);
 			if (effectiveLoadDisplay) effectiveLoadDisplay.textContent = formatNumber(effectiveLoad);
 			

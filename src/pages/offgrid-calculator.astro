@@ -165,6 +165,77 @@ import Layout from '../layouts/Layout.astro';
 									<span>Battery draw: (<span id="ac-input-display">1,000</span> ÷ 0.92) + <span id="dc-display">200</span> = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
 								</div>
 
+								<!-- Show working toggle -->
+								<button
+									type="button"
+									id="show-working-btn"
+									class="self-start font-mono text-[10px] text-[#888888] dark:text-[#555555] hover:text-[#0070f3] dark:hover:text-[#0070f3] transition-colors focus:outline-none"
+									aria-expanded="false"
+									aria-controls="working-breakdown"
+								>
+									Show working →
+								</button>
+
+								<!-- Calculation breakdown (hidden by default) -->
+								<div
+									id="working-breakdown"
+									class="hidden flex-col gap-3 pt-1"
+								>
+									<!-- Step 1 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-mono text-[9px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Step 1 — AC load correction</span>
+										<div class="flex flex-col gap-0.5 pl-2 border-l-2 border-[#0070f3]/30">
+											<div class="flex justify-between items-center">
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">Appliance consumption</span>
+												<span class="font-mono text-[10px] text-[#171717] dark:text-white" id="wd-ac-input">1,000 Wh</span>
+											</div>
+											<div class="flex justify-between items-center">
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">Inverter efficiency</span>
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">÷ 0.92</span>
+											</div>
+											<div class="flex justify-between items-center border-t border-[#ebebeb] dark:border-[#333333] pt-0.5 mt-0.5">
+												<span class="font-mono text-[10px] font-semibold text-[#4d4d4d] dark:text-[#888888]">Battery must supply</span>
+												<span class="font-mono text-[10px] font-semibold text-[#0070f3]" id="wd-ac-corrected">1,087 Wh</span>
+											</div>
+										</div>
+									</div>
+
+									<!-- Step 2 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-mono text-[9px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Step 2 — DC load (no correction)</span>
+										<div class="flex flex-col gap-0.5 pl-2 border-l-2 border-[#22c55e]/30">
+											<div class="flex justify-between items-center">
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">DC consumption</span>
+												<span class="font-mono text-[10px] text-[#171717] dark:text-white" id="wd-dc-input">200 Wh</span>
+											</div>
+											<div class="flex justify-between items-center">
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">Correction factor</span>
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">× 1.00 (direct)</span>
+											</div>
+											<div class="flex justify-between items-center border-t border-[#ebebeb] dark:border-[#333333] pt-0.5 mt-0.5">
+												<span class="font-mono text-[10px] font-semibold text-[#4d4d4d] dark:text-[#888888]">Battery must supply</span>
+												<span class="font-mono text-[10px] font-semibold text-[#22c55e]" id="wd-dc-corrected">200 Wh</span>
+											</div>
+										</div>
+									</div>
+
+									<!-- Step 3 -->
+									<div class="flex flex-col gap-1">
+										<span class="font-mono text-[9px] text-[#888888] dark:text-[#555555] uppercase tracking-wider">Step 3 — Total battery draw</span>
+										<div class="flex flex-col gap-0.5 pl-2 border-l-2 border-[#ebebeb] dark:border-[#333333]">
+											<div class="flex justify-between items-center">
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]">AC corrected + DC</span>
+												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]" id="wd-sum-parts">1,087 + 200</span>
+											</div>
+											<div class="flex justify-between items-center border-t border-[#ebebeb] dark:border-[#333333] pt-0.5 mt-0.5">
+												<span class="font-mono text-[10px] font-semibold text-[#171717] dark:text-white">Total battery draw</span>
+												<span class="font-mono text-[10px] font-semibold text-[#171717] dark:text-white" id="wd-total">1,287 Wh/day</span>
+											</div>
+											<p class="font-mono text-[9px] text-[#888888] dark:text-[#555555] mt-0.5">This figure is used as Daily Load in all calculations below.</p>
+										</div>
+									</div>
+								</div>
+
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Load Presets">
 									<button type="button" id="preset-low" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
 										Low (Cabin: 500 Wh)
@@ -728,6 +799,16 @@ import Layout from '../layouts/Layout.astro';
 		const acCorrectedDisplay = document.getElementById('ac-input-display');
 		const dcDisplay = document.getElementById('dc-display');
 		const effectiveLoadDisplay = document.getElementById('effective-load-display');
+
+		// Working breakdown elements
+		const showWorkingBtn = document.getElementById('show-working-btn');
+		const workingBreakdown = document.getElementById('working-breakdown');
+		const wdAcInput = document.getElementById('wd-ac-input');
+		const wdAcCorrected = document.getElementById('wd-ac-corrected');
+		const wdDcInput = document.getElementById('wd-dc-input');
+		const wdDcCorrected = document.getElementById('wd-dc-corrected');
+		const wdSumParts = document.getElementById('wd-sum-parts');
+		const wdTotal = document.getElementById('wd-total');
 		
 		const svgUsableFill = document.getElementById('svg-usable-fill');
 		const svgReserveFill = document.getElementById('svg-reserve-fill');
@@ -897,6 +978,14 @@ import Layout from '../layouts/Layout.astro';
 			if (acCorrectedDisplay) acCorrectedDisplay.textContent = formatNumber(acLoad);
 			if (dcDisplay) dcDisplay.textContent = formatNumber(dcLoad);
 			if (effectiveLoadDisplay) effectiveLoadDisplay.textContent = formatNumber(effectiveLoad);
+
+			// Update working breakdown
+			if (wdAcInput) wdAcInput.textContent = formatNumber(acLoad) + ' Wh';
+			if (wdAcCorrected) wdAcCorrected.textContent = formatNumber(acCorrected) + ' Wh';
+			if (wdDcInput) wdDcInput.textContent = formatNumber(dcLoad) + ' Wh';
+			if (wdDcCorrected) wdDcCorrected.textContent = formatNumber(dcLoad) + ' Wh';
+			if (wdSumParts) wdSumParts.textContent = formatNumber(acCorrected) + ' + ' + formatNumber(dcLoad);
+			if (wdTotal) wdTotal.textContent = formatNumber(effectiveLoad) + ' Wh/day';
 			
 			let psh = parseFloat(pshInput.value);
 			if (isNaN(psh) || psh <= 0) {
@@ -1201,6 +1290,24 @@ import Layout from '../layouts/Layout.astro';
 		}
 		
 		// Daily Load Input Listener
+		// Show working breakdown toggle
+		if (showWorkingBtn && workingBreakdown) {
+			showWorkingBtn.addEventListener('click', () => {
+				const isExpanded = showWorkingBtn.getAttribute('aria-expanded') === 'true';
+				if (isExpanded) {
+					workingBreakdown.classList.remove('flex');
+					workingBreakdown.classList.add('hidden');
+					showWorkingBtn.setAttribute('aria-expanded', 'false');
+					showWorkingBtn.textContent = 'Show working →';
+				} else {
+					workingBreakdown.classList.remove('hidden');
+					workingBreakdown.classList.add('flex');
+					showWorkingBtn.setAttribute('aria-expanded', 'true');
+					showWorkingBtn.textContent = 'Hide working ↑';
+				}
+			});
+		}
+
 		// AC and DC Load Input Listeners
 		if (acLoadInput) {
 			acLoadInput.addEventListener('input', () => calculate());

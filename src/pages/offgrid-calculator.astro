@@ -162,14 +162,14 @@ import Layout from '../layouts/Layout.astro';
 								<!-- Effective load summary banner -->
 								<div id="load-summary-banner" class="flex items-center gap-2 p-2.5 rounded-md bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[10px] font-mono text-[#4d4d4d] dark:text-[#888888]">
 									<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-									<span>Battery draw: (<span id="ac-input-display">1,000</span> ÷ 0.92) + <span id="dc-display">200</span> = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
+									<span>Effective Daily Load: (<span id="ac-input-display">1,000</span> ÷ 0.92) + <span id="dc-display">200</span> = <strong class="text-[#171717] dark:text-white" id="effective-load-display">1,287</strong> Wh/day</span>
 								</div>
 
 								<!-- Show working toggle -->
 								<button
 									type="button"
 									id="show-working-btn"
-									class="self-start font-mono text-[10px] text-[#888888] dark:text-[#555555] hover:text-[#0070f3] dark:hover:text-[#0070f3] transition-colors focus:outline-none"
+									class="self-start font-mono text-[10px] text-[#0070f3] hover:text-[#005cc5] dark:text-[#60a5fa] dark:hover:text-[#93c5fd] transition-colors focus:outline-none underline underline-offset-2"
 									aria-expanded="false"
 									aria-controls="working-breakdown"
 								>
@@ -228,23 +228,23 @@ import Layout from '../layouts/Layout.astro';
 												<span class="font-mono text-[10px] text-[#4d4d4d] dark:text-[#888888]" id="wd-sum-parts">1,087 + 200</span>
 											</div>
 											<div class="flex justify-between items-center border-t border-[#ebebeb] dark:border-[#333333] pt-0.5 mt-0.5">
-												<span class="font-mono text-[10px] font-semibold text-[#171717] dark:text-white">Total battery draw</span>
+												<span class="font-mono text-[10px] font-semibold text-[#171717] dark:text-white">Effective Daily Load</span>
 												<span class="font-mono text-[10px] font-semibold text-[#171717] dark:text-white" id="wd-total">1,287 Wh/day</span>
 											</div>
-											<p class="font-mono text-[9px] text-[#888888] dark:text-[#555555] mt-0.5">This figure is used as Daily Load in all calculations below.</p>
+											<p class="font-mono text-[9px] text-[#888888] dark:text-[#555555] mt-0.5">This is the Effective Daily Load used in all sizing calculations below.</p>
 										</div>
 									</div>
 								</div>
 
 								<div class="flex flex-wrap gap-2 mt-1" role="group" aria-label="Load Presets">
 									<button type="button" id="preset-low" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
-										Low (Cabin: 500 Wh)
+										Low: 400 AC + 100 DC
 									</button>
 									<button type="button" id="preset-med" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
-										Med (RV: 1,500 Wh)
+										Med: 1,300 AC + 200 DC
 									</button>
 									<button type="button" id="preset-high" class="px-2 py-1 text-[10px] font-mono rounded bg-[#f5f5f5] dark:bg-[#1a1a1a] border border-[#ebebeb] dark:border-[#333333] text-[#4d4d4d] dark:text-[#888888] hover:bg-[#ebebeb] dark:hover:bg-[#222222] hover:text-[#171717] dark:hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-[#171717] dark:focus-visible:ring-white focus-visible:outline-none">
-										High (Home: 5,000 Wh)
+										High: 4,500 AC + 500 DC
 									</button>
 								</div>
 
